@@ -2,14 +2,9 @@
 d3.select('#d3Div').append('svg').attr('width', 300).attr('height', 200)
     .append('circle').attr('cx', 50).attr('cy', 50).attr('r', 40).attr('fill', 'blue');
 
-d3.csv("./data/modis_test.csv").then(function(data) {
+d3.csv("./data/modis_2022_United_States.csv").then(function(data) {
   createTable(data);
   createGeoGraph(data);
-});
-
-//API Token
-Plotly.setPlotConfig({
-  mapboxAccessToken: 'pk.eyJ1IjoiYWxleGFuZGVyaHVuZyIsImEiOiJjbG8xY2VnMXcwc2x0MmxvZHBmNTVpYjM3In0.nghzNs8d4lg_MLvHETaB_w'
 });
 
 
@@ -63,6 +58,7 @@ function createGeoGraph(data) {
       scope: 'usa',
     },
     mapbox: {
+      mapbox: { style: 'carto-positron',
       center: {
         lat: 37.0902,  // center it to the USA
         lon: -95.7129
