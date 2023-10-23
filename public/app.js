@@ -58,7 +58,7 @@ function createGeoGraph(data) {
       scope: 'usa',
     },
     mapbox: {
-      mapbox: { style: 'carto-positron',
+      style: 'carto-positron',
       center: {
         lat: 37.0902,  // center it to the USA
         lon: -95.7129
