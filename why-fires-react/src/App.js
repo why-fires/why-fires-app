@@ -189,7 +189,7 @@ function App() {
   <b>Brightness(Temperature):</b> ${d.bright_t31} Kelvin<br>
   <b>Satellite:</b> ${d.satellite}<br>
             `;
-  }//  Time: ${formatTime(d.acq_time)}<br>
+  }
 
   function getPlotlyLayout(divId) {
     let currentLayout = {};
