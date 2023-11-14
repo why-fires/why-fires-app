@@ -38,6 +38,10 @@ function App() {
     setFilters(prevFilters => ({ ...prevFilters, [name]: value }));
   };
 
+  function applyFilter() {
+    loadYearData(year);
+  }
+
   function loadYearData(selectedYear) {
     const dataPath = `./data/modis_${selectedYear}_United_States.csv`;
     d3.csv(dataPath).then(loadedData => {
@@ -153,7 +157,9 @@ function App() {
       mapContainer.on('plotly_click', function(eventData) {
         console.log(eventData); // Log the eventData to inspect its structure
         var detailInfo = eventData.points[0].data.text[eventData.points[0].pointIndex];
-        document.getElementById('detailBox').textContent = detailInfo
+        var detailsBox = document.getElementById('detailBox');
+        detailsBox.style.display = 'block';
+        detailsBox.innerHTML = detailInfo;
       });
     });
   }
@@ -164,24 +170,24 @@ function App() {
 
   }
 
-  //function formatTime(timeStr) {
-  //  return timeStr.padStart(4, '0').replace(/^(..)(..)$/, '$1:$2');
-  //}
+  function formatTime(timeStr) {
+    return timeStr.padStart(4, '0').replace(/^(..)(..)$/, '$1:$2');
+  }
 
   function getDetail(d) {
     const typeDescription = typeMapping[d.type] || 'Unknown';
     const dayNightDescription = dayNightMapping[d.daynight] || 'Unknown';
 
     return `
-  State: ${d.state_name}<br>
-  Latitude: ${d.latitude}<br>
-  Longitude: ${d.longitude}<br>
-  Date: ${d.acq_date}<br>
-
-  DayNight: ${dayNightDescription}<br>
-  Type: ${typeDescription}<br>
-  Brightness(Temperature): ${d.bright_t31} Kelvin<br>
-  Satellite: ${d.satellite}<br>
+  <b>State:</b> ${d.state_name}<br>
+  <b>Latitude:</b> ${d.latitude}<br>
+  <b>Longitude:</b> ${d.longitude}<br>
+  <b>Date:</b> ${d.acq_date}<br>
+  <b>Time:</b> ${formatTime(d.acq_time)}<br>
+  <b>DayNight:</b> ${dayNightDescription}<br>
+  <b>Type:</b> ${typeDescription}<br>
+  <b>Brightness(Temperature):</b> ${d.bright_t31} Kelvin<br>
+  <b>Satellite:</b> ${d.satellite}<br>
             `;
   }//  Time: ${formatTime(d.acq_time)}<br>
 
@@ -199,6 +205,7 @@ function App() {
 
   return (
       <div className="App">
+        <link href="App.css" rel="stylesheet" />
         <div id="filter">
           <select id="stateFilter">
             <option value={""}>Select State</option>
@@ -284,21 +291,23 @@ function App() {
               <option value="11">November</option>
               <option value="12">December</option>
             </select>
+
+          <button onClick={applyFilter}>Apply</button>
         </div>
 
-        <button onClick={handleToggle3D}>Toggle 3D/2D Map</button>
+        <button onClick={handleToggle3D} style={{float: 'left'}}>Toggle 3D/2D Map</button>
 
-        <div id="mapContainer" style={{width: '80%', height: '500px', float: 'left'}}></div>
-
-        <div style={{ width: '80%', marginTop: '1000px' }}>
-          <div id="slider">
-            <input type="range" min="2012" max="2022" value={year} onChange={e => setYear(e.target.value)} />
-            <h2>{year}</h2>
+        <div id="mapContainer" style={{width: '70%', height: '500px', float: 'left'}}>
+          <div style={{ width: '80%'}}>
+            <div id="slider" style={{justifyContent: 'center', textAlign: 'center', alignItems: 'center', marginLeft: '20%'}}>
+              <input type="range" min="2012" max="2022" value={year} onChange={e => setYear(e.target.value)} style={{width: '80%'}} />
+              <h2>{year}</h2>
+            </div>
           </div>
         </div>
 
 
-        <div id="detailContainer">
+        <div id="detailContainer" style={{marginTop: '100px'}}>
           <div id="dataCount">
             <b>Total Data Points:</b> <span>{data.length}</span>
           </div>
