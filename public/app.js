@@ -52,7 +52,7 @@ function filterData(data) {
 
 function loadYearData(year) {
   const dataPath = `./data/modis_${year}_United_States.csv`;
-  let currentLayout = getPlotlyLayout('mapContainer');
+  let currentLayout = getPlotlyLayout('map2D');
   let currentCenter = currentLayout.center;
   let currentZoom = currentLayout.zoom;
 
@@ -92,6 +92,10 @@ function createGeoGraph(data, currentZoom, currentCenter) {
 }
 
 function create2DMap(data, currentZoom, currentCenter) {
+  document.getElementById('toggle3D').innerHTML = "Toggle 3D View";
+  document.getElementById('map3D').style.display = 'none';
+  document.getElementById('map2D').style.display = 'block';
+
   let trace = [
     {
       type: 'scattermapbox',
@@ -116,9 +120,9 @@ function create2DMap(data, currentZoom, currentCenter) {
     height: 1000,
   };
 
-  Plotly.newPlot('mapContainer', trace, layout);
+  Plotly.newPlot('map2D', trace, layout);
 
-  mapContainer.on('plotly_click', function(data){
+  map2D.on('plotly_click', function(data){
     var infotext = data.points[0].data.text[data.points[0].pointIndex];
 
     var detailsBox = document.getElementById('detailBox');
@@ -128,9 +132,9 @@ function create2DMap(data, currentZoom, currentCenter) {
 }
 
 function create3DMap(data) {
-  // const container = document.getElementById('mapContainer');
-  // container.innerHTML = '';
-  // container.style.display = 'none';
+  document.getElementById('toggle3D').innerHTML = "Toggle 2D View";
+  document.getElementById('map2D').style.display = 'none';
+  document.getElementById('map3D').style.display = 'block';
 
   // 1st try - nothing
   // Sample GeoJSON data
