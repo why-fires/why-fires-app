@@ -1,4 +1,5 @@
-import * as THREE from 'https://threejs.org/build/three.module.js';
+// import Globe from 'globe.gl';
+// import * as THREE from 'https://threejs.org/build/three.module.js';
 
 let is3D = false;
 document.getElementById('toggle3D').addEventListener('click', function() {
@@ -134,152 +135,64 @@ function create2DMap(data, currentZoom, currentCenter) {
 function create3DMap(data) {
   document.getElementById('toggle3D').innerHTML = "Toggle 2D View";
   document.getElementById('map2D').style.display = 'none';
-  document.getElementById('map3D').style.display = 'block';
+  const container = document.getElementById('map3D');
+  container.style.display = 'block';
 
-  // 1st try - nothing
-  // Sample GeoJSON data
-  // const geojsonData = {
-  //   "type": "FeatureCollection",
-  //   "features": [
-  //       {
-  //           "type": "Feature",
-  //           "geometry": {
-  //               "type": "Point",
-  //               "coordinates": [-73.9857, 40.7484]
-  //           },
-  //           "properties": {
-  //               "temperature": 25
-  //           }
-  //       },
-  //       // Add more test data points
-  //   ]
-  // };
+  // Modify current data
+  const brightnessArr = data.map(obj => obj.brightness);
+  console.log("b Arr" + brightnessArr);
+  normalize(brightnessArr);
+  // const minB = 1;
+  // const maxB = 2;
+  const modifiedData = data.map(obj => ({
+    lat: obj.latitude,
+    lng: obj.longitude,
+    brightness: obj.brightness //(obj.brightness - minB) / (maxB - minB)
+  }));
+  console.log(modifiedData[0]);
 
-  // // Set up scene, camera, and renderer
-  // const scene = new THREE.Scene();
-  // const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-  // const renderer = new THREE.WebGLRenderer();
-  // renderer.setSize(window.innerWidth, window.innerHeight);
-  // document.body.appendChild(renderer.domElement);
+  // Gen random data
+  // const N = 100;
+  // const gData = [...Array(N).keys()].map(() => ({
+  //   lat: (Math.random() - 0.5) * 180,
+  //   lng: (Math.random() - 0.5) * 360,
+  //   brightness: Math.random() / 3,
+  //   color: ['red', 'white', 'blue', 'green'][Math.round(Math.random() * 3)]
+  // }));
 
-  // // Create 3D points based on GeoJSON data
-  // geojsonData.features.forEach(feature => {
-  //   const [longitude, latitude] = feature.geometry.coordinates;
-  //   const temperature = feature.properties.temperature;
-
-  //   const geometry = new THREE.BoxGeometry(1, 1, temperature);
-  //   const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
-  //   const cube = new THREE.Mesh(geometry, material);
-  //   cube.position.set(longitude, latitude, temperature / 2);
-  //   scene.add(cube);
-  // });
-
-  // // Set up camera position
-  // camera.position.z = 5;
-
-  // // Animation function
-  // const animate = () => {
-  //     requestAnimationFrame(animate);
-  //     renderer.render(scene, camera);
-  // };
-
-  // animate();
-
-  //2nd try - loads 3js cube
-  const scene = new THREE.Scene();
-  const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
-
-  const renderer = new THREE.WebGLRenderer();
-  renderer.setSize( window.innerWidth, window.innerHeight );
-  document.body.appendChild( renderer.domElement );
-
-  // console.log(data);
-  // console.log(data[0]);
-
-  d3.json('./data/US_State_Boundaries.geojson')
-    .then((geojsonData) => {
-      let projection = d3.geoIdentity().fitSize([window.innerWidth, window.innerHeight], geojsonData);
-
-      geojsonData.features.forEach((feature) => {
-        // projection = d3.geoIdentity().fitSize([window.innerWidth, window.innerHeight], geojsonData);
-
-        const [x, y] = projection(feature.geometry.coordinates[0][0]);
-        // console.log(feature.geometry.coordinates);
-        console.log(x);
-        console.log(y);
-        const geometry = new THREE.BoxGeometry(1, 3, 1);
-        const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
-        const cube = new THREE.Mesh(geometry, material);
-        cube.position.set(x, y, 1);
-        scene.add(cube);
-      });
-    })
-    .catch((error) => console.error('Error loading GeoJSON data:', error));
-
-  // const geometry = new THREE.BoxGeometry( 2, 1, 1 );
-  // const material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
-  // const cube = new THREE.Mesh( geometry, material );
-  // scene.add( cube );
-
-  camera.position.z = 5;
-
-  const animate = () => {
-    requestAnimationFrame(animate);
-    renderer.render(scene, camera);
-  };
-
-  animate();
-
-  //3rd try - nothing, process US geojson and fire data
-  // Set up scene, camera, and renderer
-  // const scene = new THREE.Scene();
-  // const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-  // const renderer = new THREE.WebGLRenderer();
-  // renderer.setSize(window.innerWidth, window.innerHeight);
-  // document.body.appendChild(renderer.domElement);
-
-  // // Load US GeoJSON data
-  // const geojsonPath = './data/US_State_Boundaries.geojson';
-  // const csvPath = './data/modis_2012_United_States.csv';
-
-  // Promise.all([
-  //     d3.json(geojsonPath),
-  //     data
-  // ]).then(([geojsonData, populationData]) => {
-  //     // Projection setup
-  //     const projection = d3.geoIdentity().fitSize([window.innerWidth, window.innerHeight], geojsonData);
-
-  //     // Create a dictionary to store population data by state name
-  //     const populationByState = {};
-  //     populationData.forEach((d) => {
-  //         populationByState[d.state_name] = +d.brightness; // Convert brightness to a number
-  //     });
-
-  //     // Create 3D shapes based on GeoJSON data
-  //     geojsonData.features.forEach((feature) => {
-  //         const [x, y] = projection(feature.geometry.coordinates);
-  //         const stateName = feature.properties.NAME;
-  //         const population = populationByState[stateName] || 0;
-
-  //         const geometry = new THREE.BoxGeometry(1, 1, population / 100000);
-  //         const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
-  //         const cube = new THREE.Mesh(geometry, material);
-  //         cube.position.set(x, y, population / 200000);
-  //         scene.add(cube);
-  //     });
-  // }).catch((error) => console.error('Error loading data:', error));
+  // console.log(gData);
 
 
-  // // Set up camera position
-  // camera.position.z = 5;
+  const world = Globe();
+  world(container)
+    .globeImageUrl('//unpkg.com/three-globe/example/img/earth-night.jpg')
+    .bumpImageUrl('//unpkg.com/three-globe/example/img/earth-topology.png')
+    .backgroundImageUrl('//unpkg.com/three-globe/example/img/night-sky.png')
+    // .hexBinPointWeight('pop')
+    // .hexAltitude(d => d.sumWeight * 6e-8)
+    // .hexBinResolution(4)
+    // .hexTopColor(d => weightColor(d.sumWeight))
+    // .hexSideColor(d => weightColor(d.sumWeight))
+    // .hexBinMerge(true)
+    // .enablePointerInteraction(false) // performance improvement
+    .pointsData(modifiedData.slice(0, 100))
+    .pointAltitude('brightness');
+    // .pointColor('red');
+    // .pointsData(data);
 
-  // // Animation function
-  // const animate = () => {
-  // requestAnimationFrame(animate);
-  // renderer.render(scene, camera);
-  // };
+  // Promise.all(data)
+  //   .then(d => d3.csvParse(d, ({ lat, lng, pop }) => ({ lat: +lat, lng: +lng, pop: +pop })))
+  //   .then(data => world.hexBinPointsData(data));
 
-  // animate();
+}
+
+function normalize(x) {
+  let xminimum = x.reduce((min, current) => (current < min) ? current : min)
+  let xmaximum = x.reduce((max, current) => (current > max) ? current : max)
+  let xnormalized = x.map((item) => (item - xminimum) / (xmaximum - xminimum))
+
+  // console.log("norm'd" + xnormalized);
+  return xnormalized;
 }
 
 function formatTime(timeStr) {
