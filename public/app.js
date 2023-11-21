@@ -19,6 +19,13 @@ const dayNightMapping = {
   'N' : 'Nighttime fire'
 }
 
+const statesLonLat = {
+  'Alabama' : {lat: 32.3182 , lon: -86.9023 },
+
+}
+
+let currentCenter = null;
+
 function filterData(data) {
   let filteredData = data;
   const stateFilter = document.getElementById('stateFilter').value;
@@ -27,6 +34,9 @@ function filterData(data) {
   const dateFilter = document.getElementById('dateFilter').value;
   const monthFilter = document.getElementById('monthFilter').value;
 
+  if (stateFilter === "Select State") {
+    return filteredData;
+  }
   if (stateFilter) {
     filteredData = filteredData.filter(d => d.state_name === stateFilter);
   }
@@ -51,8 +61,8 @@ function filterData(data) {
 function loadYearData(year) {
   const dataPath = `./data/modis_${year}_United_States.csv`;
   let currentLayout = getPlotlyLayout('mapContainer');
-  let currentCenter = currentLayout.center;
-  let currentZoom = currentLayout.zoom;
+  currentCenter = currentLayout.center;
+  currentZoom = currentLayout.zoom;
 
   // Set the min and max dates for the date input
   const minDate = `${year}-01-01`; // first day of the year
@@ -63,6 +73,9 @@ function loadYearData(year) {
   d3.csv(dataPath).then((data) => {
     let filteredData = filterData(data);
     updateDataCount(filteredData.length);
+    let states = document.getElementById('stateFilter').value;
+    let latLon = statesLonLat[states];
+    console.log(latLon);
     createGeoGraph(filteredData, currentZoom, currentCenter);
   });
 }
@@ -106,15 +119,28 @@ function create2DMap(data, currentZoom, currentCenter) {
   ];
 
   let layout = {
+    autosize: false,
     mapbox: {
       style: 'carto-positron',
       center: currentCenter || { lat: 37.0902, lon: -95.7129 },
       zoom: currentZoom || 3
     },
-    height: 1000,
+    margin: {
+      l: 10,
+      r: 10,
+      b: 10,
+      t: 10,
+      pad: 0
+    },
+    height: window.innerHeight - 100,
+    width: window.innerWidth - 100,
+    paper_bgcolor: '#191A1A',
+    plot_bgcolor: '#191A1A',
   };
 
-  Plotly.newPlot('mapContainer', trace, layout);
+  let config = {responsive: true, displayModeBar: false}
+
+  Plotly.newPlot('mapContainer', trace, layout, config);
 
   mapContainer.on('plotly_click', function(data){
     var infotext = data.points[0].data.text[data.points[0].pointIndex];
