@@ -139,9 +139,10 @@ function create3DMap(data) {
   container.style.display = 'block';
 
   // Modify current data
-  const brightnessArr = data.map(obj => obj.brightness);
-  console.log("b Arr" + brightnessArr);
-  normalize(brightnessArr);
+  let brightnessArr = data.map(obj => obj.brightness);
+  brightnessArr = normalize(brightnessArr);
+  console.log("after norm: ");
+  console.log(brightnessArr);
   // const minB = 1;
   // const maxB = 2;
   const modifiedData = data.map(obj => ({
@@ -149,7 +150,7 @@ function create3DMap(data) {
     lng: obj.longitude,
     brightness: obj.brightness //(obj.brightness - minB) / (maxB - minB)
   }));
-  console.log(modifiedData[0]);
+  // console.log(modifiedData[0]);
 
   // Gen random data
   // const N = 100;
@@ -186,12 +187,27 @@ function create3DMap(data) {
 
 }
 
+function normalize2(x) {
+  let xminimum = x.reduce((min, current) => (current < min) ? current : min)
+  let xmaximum = x.reduce((max, current) => (current > max) ? current : max)
+  let xnormalized = x.map((item) => (item - xminimum) / (xmaximum - xminimum))
+
+  console.log("min" + xminimum);
+  console.log("max" + xmaximum);
+  console.log("norm'd");
+  console.log(xnormalized);
+  return xnormalized;
+}
+
 function normalize(x) {
   let xminimum = x.reduce((min, current) => (current < min) ? current : min)
   let xmaximum = x.reduce((max, current) => (current > max) ? current : max)
   let xnormalized = x.map((item) => (item - xminimum) / (xmaximum - xminimum))
 
-  // console.log("norm'd" + xnormalized);
+  console.log("min" + xminimum);
+  console.log("max" + xmaximum);
+  console.log("norm'd");
+  console.log(xnormalized);
   return xnormalized;
 }
 
