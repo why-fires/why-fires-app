@@ -38,7 +38,7 @@ const Filters = ({ filters, setFilters }) => (
             ))}
         </select>
 
-        {// TODO: the set date does not seem to filter the data}
+        {/* TODO: the set date does not seem to filter the data */}
         <input
             type="date"
             value={filters.date}

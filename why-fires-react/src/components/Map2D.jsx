@@ -2,7 +2,7 @@ import Plot from "react-plotly.js";
 import { dayNightOptions, typeOptions } from "../constants/options";
 import SidePanel from "./SidePanel";
 import { Col, Row } from "react-bootstrap";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 const Map2D = ({ data }) => {
     const [selectedData, setSelectedData] = useState('');
