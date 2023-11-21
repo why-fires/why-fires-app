@@ -21,7 +21,7 @@ const dayNightMapping = {
 
 const statesLonLat = {
   'Alabama' : {lat: 32.3182 , lon: -86.9023 },
-
+  'Hawaii' : {lat: 19.8987 , lon: -155.6659 },
 }
 
 let currentCenter = null;
@@ -39,6 +39,7 @@ function filterData(data) {
   }
   if (stateFilter) {
     filteredData = filteredData.filter(d => d.state_name === stateFilter);
+    currentZoom = 5;
   }
   if (dayNightFilter) {
     filteredData = filteredData.filter(d => d.daynight === dayNightFilter);
@@ -76,7 +77,7 @@ function loadYearData(year) {
     let states = document.getElementById('stateFilter').value;
     let latLon = statesLonLat[states];
     console.log(latLon);
-    createGeoGraph(filteredData, currentZoom, currentCenter);
+    createGeoGraph(filteredData, currentZoom, latLon);
   });
 }
 
