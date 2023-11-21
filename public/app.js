@@ -1,4 +1,4 @@
-let is3D = false;
+let is3D = true;
 document.getElementById('toggle3D').addEventListener('click', function() {
   is3D = !is3D; // Toggle the is3D flag
   loadYearData(document.getElementById('yearSlider').value);
@@ -63,7 +63,7 @@ function loadYearData(year) {
   d3.csv(dataPath).then((data) => {
     let filteredData = filterData(data);
     updateDataCount(filteredData.length);
-    createGeoGraph(filteredData, currentZoom, currentCenter);
+    createGeoGraph(filteredData.slice(0,5), currentZoom, currentCenter);
   });
 }
 
@@ -83,7 +83,7 @@ document.getElementById('monthFilter').addEventListener('change', () => loadYear
 
 function createGeoGraph(data, currentZoom, currentCenter) {
   if (is3D) {
-    create3DMap(data);
+    create3DMap(data, currentZoom, currentCenter);
   } else {
     create2DMap(data, currentZoom, currentCenter);
   }
@@ -96,12 +96,19 @@ function create2DMap(data, currentZoom, currentCenter) {
       mode: 'markers',
       lat: data.map(d => d.latitude),
       lon: data.map(d => d.longitude),
+      // z: [743, 257, 653, 541, 845],
       text: data.map(d => getDetail(d)),
       marker: {
         color: 'red',
         size: 10,
+        // size: [100, 54, 28, 74, 36], //10
+        // sizemode: "area",
+        // sizeref: 3,
         opacity: 0.8
-      }
+      },
+      text: ['Marker 1', 'Marker 2', 'Marker 3'],
+      extrude: [50, 100, 75]
+      // angle: [38, 75, 48, 53, 92]
     }
   ];
 
@@ -109,7 +116,9 @@ function create2DMap(data, currentZoom, currentCenter) {
     mapbox: {
       style: 'carto-positron',
       center: currentCenter || { lat: 37.0902, lon: -95.7129 },
-      zoom: currentZoom || 3
+      zoom: currentZoom || 3,
+      pitch: 45,
+      bearing: -25
     },
     height: 1000,
   };
@@ -125,10 +134,48 @@ function create2DMap(data, currentZoom, currentCenter) {
   });
 }
 
-function create3DMap(data) {
+function create3DMap(data, currentZoom, currentCenter) {
   //const container = document.getElementById('mapContainer');
   //container.innerHTML = '';
 
+  let trace = [
+    {
+      type: 'scatter3d',
+      mode: 'lines',
+      lat: data.map(d => d.latitude),
+      lon: data.map(d => d.longitude),
+      z: [743, 257, 653, 541, 845],
+      text: data.map(d => getDetail(d)),
+      marker: {
+        color: 'red',
+        size: 10,
+        // size: [100, 54, 28, 74, 36], //10
+        // sizemode: "area",
+        // sizeref: 3,
+        opacity: 0.8
+      },
+      line: {
+        width: 6,
+      },
+      text: ['Marker 1', 'Marker 2', 'Marker 3'],
+      extrude: [50, 100, 75]
+      // angle: [38, 75, 48, 53, 92]
+    }
+  ];
+
+  const updatedLayout = {
+    mapbox: {
+      style: 'carto-positron',
+      center: currentCenter || { lat: 37.0902, lon: -95.7129 },
+      zoom: currentZoom || 3,
+      pitch: 45,
+      bearing: -25
+    },
+  };
+
+  
+
+  Plotly.newPlot('mapContainer', trace, updatedLayout);
 }
 
 function formatTime(timeStr) {
