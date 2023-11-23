@@ -1,4 +1,5 @@
 #infoContainer {
+  margin-top: 10px;
   position: absolute;
   display: flex;
 }

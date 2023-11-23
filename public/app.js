@@ -19,6 +19,11 @@ const dayNightMapping = {
   'N' : 'Nighttime fire'
 }
 
+const dayNightStyle = {
+  'D' : 'light',
+  'N' : 'dark'
+}
+
 const statesLonLat = {
   'Alabama' : {lat: 32.3182 , lon: -86.9023 },
   'Alaska': {lat: 65.8673, lon: -151.2874},
@@ -124,8 +129,9 @@ function loadYearData(year) {
     updateDataCount(filteredData.length);
     let states = document.getElementById('stateFilter').value;
     let latLon = statesLonLat[states];
-    console.log(latLon);
-    createGeoGraph(filteredData, currentZoom, latLon);
+    let dayNight = document.getElementById('dayNightFilter').value;
+    let style = dayNightStyle[dayNight];
+    createGeoGraph(filteredData, currentZoom, latLon, style);
   });
 }
 
@@ -143,34 +149,46 @@ document.getElementById('typeFilter').addEventListener('change', () => loadYearD
 document.getElementById('dateFilter').addEventListener('change', () => loadYearData(document.getElementById('yearSlider').value));
 document.getElementById('monthFilter').addEventListener('change', () => loadYearData(document.getElementById('yearSlider').value));
 
-function createGeoGraph(data, currentZoom, currentCenter) {
+function createGeoGraph(data, currentZoom, currentCenter, style) {
   if (is3D) {
     create3DMap(data);
   } else {
-    create2DMap(data, currentZoom, currentCenter);
+    create2DMap(data, currentZoom, currentCenter, style);
   }
 }
 
-function create2DMap(data, currentZoom, currentCenter) {
+function create2DMap(data, currentZoom, currentCenter, style) {
+  let opacities = data.map(d => d.bright_t31 * 0.0025);
+  console.log(opacities);
+
   let trace = [
     {
       type: 'scattermapbox',
+      //type: 'scattergeo',
+      //locationmode: 'USA-states',
       mode: 'markers',
       lat: data.map(d => d.latitude),
       lon: data.map(d => d.longitude),
       text: data.map(d => getDetail(d)),
       marker: {
-        color: 'red',
-        size: 10,
-        opacity: 0.8
+        color: 'orange',
+        size: 12,
+        opacity: opacities
       }
     }
   ];
 
   let layout = {
     autosize: false,
+    //geo: {
+    //  scope: 'usa',
+    //  projection: {
+    //    type: 'albers usa'
+    //  },
+    //},
     mapbox: {
-      style: 'carto-positron',
+      //style: 'carto-positron',
+      style: style || 'carto-positron',
       center: currentCenter || { lat: 37.0902, lon: -95.7129 },
       zoom: currentZoom || 3
     },
@@ -181,13 +199,13 @@ function create2DMap(data, currentZoom, currentCenter) {
       t: 10,
       pad: 0
     },
-    height: window.innerHeight - 100,
-    width: window.innerWidth - 100,
+    height: window.innerHeight,
+    width: window.innerWidth,
     paper_bgcolor: '#191A1A',
     plot_bgcolor: '#191A1A',
   };
 
-  let config = {responsive: true, displayModeBar: false}
+  let config = {responsive: true, displayModeBar: false, mapboxAccessToken: 'pk.eyJ1IjoiYWxleGFuZGVyaHVuZyIsImEiOiJjbG8xY2VnMXcwc2x0MmxvZHBmNTVpYjM3In0.nghzNs8d4lg_MLvHETaB_w'}
 
   Plotly.newPlot('mapContainer', trace, layout, config);
 
