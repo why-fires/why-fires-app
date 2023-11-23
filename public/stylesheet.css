@@ -1,55 +1,19 @@
-body {
-  height: 100%;
-  margin: 0;
-  display: flex;
-  flex-direction: column;
-}
-
-header {
-
-}
-
-main {
-  flex: 1;
+#infoContainer {
+  position: absolute;
   display: flex;
 }
 
-footer {
-  margin-top: 100px;
-  width: 100%;
+#mapContainer {
+  display: flex;
 }
 
-#yearSlider {
-  width: 75%;
+container {
+  margin-left: 5%;
 }
 
 .center {
   justify-content: center;
   text-align: center;
+  align-content: center;
   align-items: center;
-}
-.container {
-  width: 100%;
-  height: 100%;
-}
-
-#toggle3D {
-  margin: 10px;
-  float: left;
-}
-
-#mapContainer {
-  flex-grow: 1;
-  height: 100vh;
-}
-
-#detailContainer {
-  margin-top: 200px;
-  margin-right: 50px;
-  margin-left: 10px;
-}
-
-#filter {
-  margin: 10px;
-  float: right;
 }
