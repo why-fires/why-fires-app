@@ -1,4 +1,4 @@
-let is3D = true;
+let is3D = false;
 document.getElementById('toggle3D').addEventListener('click', function() {
   is3D = !is3D; // Toggle the is3D flag
   loadYearData(document.getElementById('yearSlider').value);
@@ -63,7 +63,7 @@ function loadYearData(year) {
   d3.csv(dataPath).then((data) => {
     let filteredData = filterData(data);
     updateDataCount(filteredData.length);
-    createGeoGraph(filteredData.slice(0,5), currentZoom, currentCenter);
+    createGeoGraph(filteredData.slice(0,50), currentZoom, currentCenter); // remove .slice(0,50)
   });
 }
 
@@ -106,8 +106,7 @@ function create2DMap(data, currentZoom, currentCenter) {
         // sizeref: 3,
         opacity: 0.8
       },
-      text: ['Marker 1', 'Marker 2', 'Marker 3'],
-      extrude: [50, 100, 75]
+      // extrude: [50, 100, 75]
       // angle: [38, 75, 48, 53, 92]
     }
   ];
@@ -117,8 +116,8 @@ function create2DMap(data, currentZoom, currentCenter) {
       style: 'carto-positron',
       center: currentCenter || { lat: 37.0902, lon: -95.7129 },
       zoom: currentZoom || 3,
-      pitch: 45,
-      bearing: -25
+      // pitch: 45,
+      // bearing: -25
     },
     height: 1000,
   };
@@ -138,45 +137,167 @@ function create3DMap(data, currentZoom, currentCenter) {
   //const container = document.getElementById('mapContainer');
   //container.innerHTML = '';
 
-  let trace = [
-    {
-      type: 'scatter3d',
-      mode: 'lines',
-      lat: data.map(d => d.latitude),
-      lon: data.map(d => d.longitude),
-      z: [743, 257, 653, 541, 845],
-      text: data.map(d => getDetail(d)),
-      marker: {
-        color: 'red',
-        size: 10,
-        // size: [100, 54, 28, 74, 36], //10
-        // sizemode: "area",
-        // sizeref: 3,
-        opacity: 0.8
-      },
-      line: {
-        width: 6,
-      },
-      text: ['Marker 1', 'Marker 2', 'Marker 3'],
-      extrude: [50, 100, 75]
-      // angle: [38, 75, 48, 53, 92]
-    }
-  ];
+  const filePath = './data/US_State_Boundaries.geojson';
+  const filePathSmall = './data/US_States_20m.json'; // Source: https://eric.clst.org/tech/usgeojson/
 
-  const updatedLayout = {
-    mapbox: {
-      style: 'carto-positron',
-      center: currentCenter || { lat: 37.0902, lon: -95.7129 },
-      zoom: currentZoom || 3,
-      pitch: 45,
-      bearing: -25
-    },
-  };
+// fetch(italy)
+//     .then(response => response.json())
+//     .then(geojson => {
+//         // Extract points defining boundaries of polygons
+//         const pts = [];
+//         for (const feature of geojson.features) {
+//             if (feature.geometry.type === 'Polygon') {
+//                 pts.push(...feature.geometry.coordinates[0]);
+//                 pts.push([null, null]); // Mark the end of a polygon
+//             } else if (feature.geometry.type === 'MultiPolygon') {
+//                 for (const polyg of feature.geometry.coordinates) {
+//                     pts.push(...polyg[0]);
+//                     pts.push([null, null]); // End of polygon
+//                 }
+//             } else {
+//                 console.log("Unsupported geometry type:", feature.geometry.type);
+//             }
+//         }
+
+//         const [x, y] = zip(...pts);
+//         const z = new Array(x.length).fill(0);
+
+//         let mapTrace = {
+//           x: x,
+//           y: y,
+//           z: z,
+//           mode: 'lines',
+//           line: {
+//             color: '#999999',
+//             width: 1.5
+//           },
+//           type: 'scatter3d',
+//         };
+
+//         let firesTrace = {
+//           type: 'scatter3d',
+//           mode: 'markers',
+//           y: data.map(d => d.latitude),
+//           x: data.map(d => d.longitude),
+//           z: data.map(d => d.brightness),
+//           text: data.map(d => getDetail(d)),
+//           marker: {
+//             color: 'red',
+//             size: 10,
+//             opacity: 0.8
+//           }
+//         };
+
+//         // Show the plot
+//         Plotly.newPlot('mapContainer', [mapTrace, firesTrace]);
+//     })
+//     .catch(error => console.error("Error loading GeoJSON:", error));
+
+const scaleFactor = 1.5;
+
+fetch(filePathSmall)
+    .then(response => response.json())
+    .then(geojson => {
+        // Extract points defining boundaries of polygons
+        const pts = [];
+        const processCoordinates = (coordinates) => {
+          for (const coord of coordinates) {
+              if (Array.isArray(coord[0])) {
+                  // Recursive call for MultiPolygon
+                  processCoordinates(coord);
+              } else {
+                  pts.push(coord);
+              }
+          }
+          // Mark the end of a polygon
+          pts.push([null, null]);
+      };
+
+      for (const feature of geojson.features) {
+        const coordinates = feature.geometry.coordinates;
+        if (feature.geometry.type === 'Polygon' || feature.geometry.type === 'MultiPolygon') {
+            processCoordinates(coordinates);
+        } else {
+            console.log("Unsupported geometry type:", feature.geometry.type);
+        }
+    }
+
+        const [x, y] = zip(...pts);
+        const z = new Array(x.length).fill(0);
+
+        // Apply scaling factor to map coordinates
+        // const scaledXMap = x.map(xVal => xVal * scaleFactor);
+        // const scaledYMap = y.map(yVal => yVal * scaleFactor);
+
+        let mapTrace = {
+          x: x,
+          y: y,
+          // x: scaledXMap,
+          // y: scaledYMap,
+          z: z,
+          mode: 'lines',
+          line: {
+            color: '#999999',
+            width: 1.5
+          },
+          type: 'scatter3d',
+        };
+
+        let firesTrace = {
+          type: 'scatter3d',
+          mode: 'markers',
+          y: data.map(d => d.latitude * scaleFactor),
+          x: data.map(d => d.longitude * scaleFactor),
+          z: data.map(d => d.brightness),
+          text: data.map(d => getDetail(d)),
+          marker: {
+            color: 'red',
+            size: 5,
+            opacity: 0.8
+          }
+        };
+
+        // Show the plot
+        Plotly.newPlot('mapContainer', [mapTrace, firesTrace]);
+    })
+    .catch(error => console.error("Error loading GeoJSON:", error));
+
+
+  // let trace = [
+  //   {
+  //     type: 'scatter3d',
+  //     mode: 'markers',
+  //     y: data.map(d => d.latitude),
+  //     x: data.map(d => d.longitude),
+  //     z: data.map(d => d.brightness),
+  //     text: data.map(d => getDetail(d)),
+  //     marker: {
+  //       color: 'red',
+  //       size: 10,
+  //       opacity: 0.8
+  //     }
+  //   }
+  // ];
+
+  // const layout = {
+  //   mapbox: {
+  //     style: 'carto-positron',
+  //     center: currentCenter || { lat: 37.0902, lon: -95.7129 },
+  //     zoom: currentZoom || 3,
+  //     pitch: 45,
+  //     bearing: -25
+  //   },
+  // };
 
   
-
-  Plotly.newPlot('mapContainer', trace, updatedLayout);
+  // Plotly.newPlot('mapContainer', fig, layout);
+  // Plotly.update('mapContainer', trace, layout);
 }
+
+function zip(...arrays) {
+  return arrays[0].map((_, i) => arrays.map(array => array[i]));
+}
+
 
 function formatTime(timeStr) {
   return timeStr.padStart(4, '0').replace(/^(..)(..)$/, '$1:$2');
