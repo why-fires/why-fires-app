@@ -179,7 +179,7 @@ function create2DMap(data, currentZoom, currentCenter, style) {
   ];
 
   let layout = {
-    autosize: false,
+    autosize: true,
     //geo: {
     //  scope: 'usa',
     //  projection: {
@@ -193,14 +193,14 @@ function create2DMap(data, currentZoom, currentCenter, style) {
       zoom: currentZoom || 3
     },
     margin: {
-      l: 10,
-      r: 10,
-      b: 10,
-      t: 10,
+      l: 0,
+      r: 0,
+      b: 0,
+      t: 0,
       pad: 0
     },
-    height: window.innerHeight,
-    width: window.innerWidth,
+    //height: window.innerHeight,
+    //width: window.innerWidth,
     paper_bgcolor: '#191A1A',
     plot_bgcolor: '#191A1A',
   };
