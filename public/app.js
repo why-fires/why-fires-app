@@ -292,6 +292,14 @@ fetch(filePathSmall)
   
   // Plotly.newPlot('mapContainer', fig, layout);
   // Plotly.update('mapContainer', trace, layout);
+
+  /*important todo: 
+    used smaller set of geojson data
+    need to scale map along with fire data
+    remove legend and axis and other plotly features
+    set initial view of map
+    remove comments & extra code
+  */
 }
 
 function zip(...arrays) {
