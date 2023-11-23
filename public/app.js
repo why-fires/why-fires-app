@@ -138,31 +138,19 @@ function create3DMap(data) {
   const container = document.getElementById('map3D');
   container.style.display = 'block';
 
-  // Modify current data
+  // Normalize brightness
   let brightnessArr = data.map(obj => obj.brightness);
   brightnessArr = normalize(brightnessArr);
-  console.log("after norm: ");
-  console.log(brightnessArr);
-  // const minB = 1;
-  // const maxB = 2;
+  data = data.map((obj, index) => {
+    return { ...obj, brightness: brightnessArr[index] };
+  });
+
+  // Rename keys
   const modifiedData = data.map(obj => ({
-    lat: obj.latitude,
-    lng: obj.longitude,
-    brightness: obj.brightness //(obj.brightness - minB) / (maxB - minB)
+    lat: obj.latitude, //rename key to lat
+    lng: obj.longitude, //rename key to lng
+    brightness: obj.brightness //unchanged
   }));
-  // console.log(modifiedData[0]);
-
-  // Gen random data
-  // const N = 100;
-  // const gData = [...Array(N).keys()].map(() => ({
-  //   lat: (Math.random() - 0.5) * 180,
-  //   lng: (Math.random() - 0.5) * 360,
-  //   brightness: Math.random() / 3,
-  //   color: ['red', 'white', 'blue', 'green'][Math.round(Math.random() * 3)]
-  // }));
-
-  // console.log(gData);
-
 
   const world = Globe();
   world(container)
@@ -176,27 +164,22 @@ function create3DMap(data) {
     // .hexSideColor(d => weightColor(d.sumWeight))
     // .hexBinMerge(true)
     // .enablePointerInteraction(false) // performance improvement
-    .pointsData(modifiedData.slice(0, 100))
-    .pointAltitude('brightness');
+    .pointsData(modifiedData.slice(0, 100)) // .slice(0, 100)
+    .pointAltitude('brightness')
+    .onPointClick(getDetail(data[0]));
     // .pointColor('red');
     // .pointsData(data);
 
-  // Promise.all(data)
-  //   .then(d => d3.csvParse(d, ({ lat, lng, pop }) => ({ lat: +lat, lng: +lng, pop: +pop })))
-  //   .then(data => world.hexBinPointsData(data));
-
-}
-
-function normalize2(x) {
-  let xminimum = x.reduce((min, current) => (current < min) ? current : min)
-  let xmaximum = x.reduce((max, current) => (current > max) ? current : max)
-  let xnormalized = x.map((item) => (item - xminimum) / (xmaximum - xminimum))
-
-  console.log("min" + xminimum);
-  console.log("max" + xmaximum);
-  console.log("norm'd");
-  console.log(xnormalized);
-  return xnormalized;
+    /*issues/todo
+      too slow to load
+      color should change with height
+      need to show states
+      change style of bg and globe?
+      center it on the US
+      display data on hover
+      adjust zoom level
+      only allow rotation viewing of US, not other countries
+    */
 }
 
 function normalize(x) {
@@ -204,10 +187,8 @@ function normalize(x) {
   let xmaximum = x.reduce((max, current) => (current > max) ? current : max)
   let xnormalized = x.map((item) => (item - xminimum) / (xmaximum - xminimum))
 
-  console.log("min" + xminimum);
-  console.log("max" + xmaximum);
-  console.log("norm'd");
-  console.log(xnormalized);
+  // console.log("min" + xminimum);
+  // console.log("max" + xmaximum);
   return xnormalized;
 }
 
