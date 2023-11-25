@@ -138,6 +138,31 @@ function create3DMap(data) {
   const container = document.getElementById('map3D');
   container.style.display = 'block';
 
+  // Add an event listener to the button
+  document.getElementById('showNumDataButton').addEventListener('click', function () {
+    updateNumDataPoints();
+  });
+
+  let showNumData = 20000;
+
+  function updateNumDataPoints() {
+    const showNumDataInput = document.getElementById('showNumDataInput');
+    showNumData = parseInt(showNumDataInput.value);
+
+    // Check if the input value is a valid number
+    if (!isNaN(showNumData)) {
+      // Update the number of data points on the map
+      world.pointsData(modifiedData.sort((a, b) => b.brightness - a.brightness).slice(0, showNumData));
+    } else {
+      // Handle invalid input (e.g., display an error message)
+      alert('Please enter a valid number of data points.');
+    }
+  }
+
+
+  let minBrightness = data.reduce((min, p) => p.bright_t31 < min ? p.bright_t31 : min, data[0].bright_t31);
+  let maxBrightness = data.reduce((max, p) => p.bright_t31 > max ? p.bright_t31 : max, data[0].bright_t31);
+
   // Normalize brightness
   let brightnessArr = data.map(obj => obj.bright_t31);
   brightnessArr = normalize(brightnessArr);
@@ -151,10 +176,11 @@ function create3DMap(data) {
   }));
 
   function brightnessToColor(brightness) {
-    const maxBrightness = 0.03751; // Assuming max brightness is scaled to 5
-    const hue = (1 - brightness / maxBrightness) * 240; // Scale to a hue value
+    const max = maxBrightness * 0.0001; // Assuming max brightness is scaled to 5
+    const hue = (1 - brightness / max) * 240; // Scale to a hue value
     return `hsl(${hue}, 100%, 50%)`;
   }
+
 
   // Initialize the globe
   const world = Globe();
@@ -162,7 +188,7 @@ function create3DMap(data) {
       .globeImageUrl('//unpkg.com/three-globe/example/img/earth-night.jpg')
       .bumpImageUrl('//unpkg.com/three-globe/example/img/earth-topology.png')
       .backgroundImageUrl('//unpkg.com/three-globe/example/img/night-sky.png')
-      .pointsData(modifiedData)
+      .pointsData(modifiedData.sort((a, b) => b.brightness - a.brightness).slice(0, showNumData))
       .pointAltitude('brightness')
       .pointColor(d => brightnessToColor(d.brightness))
       .onPointClick(d => {
@@ -188,15 +214,37 @@ function create3DMap(data) {
     adjust zoom level
     only allow rotation viewing of US, not other countries
   */
+
+  // Function to update map size based on screen width
+  function updateMapSize() {
+    const screenWidth = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
+    const screenHeight = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
+
+    // You can adjust these values as needed based on your responsive design
+    if (screenWidth <= 768) {
+      container.style.width = '100%';
+      container.style.height = '400px';
+    } else {
+      container.style.width = '800px';
+      container.style.height = '600px';
+    }
+
+    // Call a function to update the globe (if needed) based on the new size
+    // For example, you might need to call world(container).resize() here
+  }
+
+  // Initial map size setup
+  updateMapSize();
+
+  // Listen for window resize events to keep the map responsive
+  window.addEventListener('resize', updateMapSize);
+
 }
 
 function normalize(x) {
   let xminimum = x.reduce((min, current) => (current < min) ? current : min)
   let xmaximum = x.reduce((max, current) => (current > max) ? current : max)
   let xnormalized = x.map((item) => (item * 0.0001));
-  console.log("min" + xminimum);
-  console.log("max" + xmaximum);
-  console.log(xnormalized);
   return xnormalized;
 }
 
