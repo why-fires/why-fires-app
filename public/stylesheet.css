@@ -67,3 +67,12 @@ body {
 .side-panel-open .sp-icon-close {
   display: initial !important;
 }
+
+#colorRangeBar {
+  width: 200px;
+  height: 20px;
+  border: 1px solid #000;
+  border-radius: 5px;
+  background: linear-gradient(to right, hsl(240, 100%, 50%), hsl(0, 100%, 50%));
+  margin: 10px;
+}
