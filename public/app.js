@@ -190,7 +190,7 @@ function filterData(data) {
 
 function loadYearData(year) {
   const dataPath = `./data/modis_${year}_United_States.csv`;
-  let currentLayout = getPlotlyLayout('mapContainer');
+  let currentLayout = getPlotlyLayout('map2D');
   currentCenter = currentLayout.center;
   currentZoom = currentLayout.zoom;
 
@@ -260,6 +260,10 @@ function createGeoGraph(data, currentZoom, currentCenter, style) {
 }
 
 function create2DMap(data, currentZoom, currentCenter, style) {
+  document.getElementById('toggle3D').innerHTML = "Toggle 3D View";
+  document.getElementById('map3D').style.display = 'none';
+  const container = document.getElementById('map2D');
+  container.style.display = 'block';
 
   let minBrightness = data.reduce((min, p) => p.bright_t31 < min ? p.bright_t31 : min, data[0].bright_t31);
   let maxBrightness = data.reduce((max, p) => p.bright_t31 > max ? p.bright_t31 : max, data[0].bright_t31);
@@ -331,9 +335,9 @@ function create2DMap(data, currentZoom, currentCenter, style) {
 
   let config = {responsive: true, displayModeBar: false, mapboxAccessToken: 'pk.eyJ1IjoiYWxleGFuZGVyaHVuZyIsImEiOiJjbG8xY2VnMXcwc2x0MmxvZHBmNTVpYjM3In0.nghzNs8d4lg_MLvHETaB_w'}
 
-  Plotly.newPlot('mapContainer', trace, layout, config);
+  Plotly.newPlot('map2D', trace, layout, config);
 
-  mapContainer.on('plotly_click', function(data){
+  map2D.on('plotly_click', function(data){
     var infotext = data.points[0].data.customdata[data.points[0].pointIndex];
 
     var detailsBox = document.getElementById('detailBox');
@@ -343,9 +347,106 @@ function create2DMap(data, currentZoom, currentCenter, style) {
 }
 
 function create3DMap(data) {
-  //const container = document.getElementById('mapContainer');
-  //container.innerHTML = '';
+  document.getElementById('toggle3D').innerHTML = "Toggle 2D View";
+  document.getElementById('map2D').style.display = 'none';
+  const container = document.getElementById('map3D');
+  container.style.display = 'block';
 
+  // Add an event listener to the button
+  document.getElementById('showNumDataButton').addEventListener('click', function () {
+    updateNumDataPoints();
+  });
+
+  let showNumData = 20000;
+
+  function updateNumDataPoints() {
+    const showNumDataInput = document.getElementById('showNumDataInput');
+    showNumData = parseInt(showNumDataInput.value);
+
+    // Check if the input value is a valid number
+    if (!isNaN(showNumData)) {
+      // Update the number of data points on the map
+      world.pointsData(modifiedData.sort((a, b) => b.brightness - a.brightness).slice(0, showNumData));
+    } else {
+      // Handle invalid input (e.g., display an error message)
+      alert('Please enter a valid number of data points.');
+    }
+  }
+
+
+  let minBrightness = data.reduce((min, p) => p.bright_t31 < min ? p.bright_t31 : min, data[0].bright_t31);
+  let maxBrightness = data.reduce((max, p) => p.bright_t31 > max ? p.bright_t31 : max, data[0].bright_t31);
+
+  // Normalize brightness
+  let brightnessArr = data.map(obj => obj.bright_t31);
+  brightnessArr = normalize(brightnessArr);
+  data = data.map((obj, index) => ({ ...obj, brightness: brightnessArr[index] }));
+
+  // Rename keys
+  const modifiedData = data.map(obj => ({
+    lat: obj.latitude,
+    lng: obj.longitude,
+    brightness: obj.brightness
+  }));
+
+  function brightnessToColor(brightness) {
+    const max = maxBrightness * 0.0001; // Assuming max brightness is scaled to 5
+    const hue = (1 - brightness / max) * 240; // Scale to a hue value
+    return `hsl(${hue}, 100%, 50%)`;
+  }
+
+
+  // Initialize the globe
+  const world = Globe();
+  world(container)
+      .globeImageUrl('//unpkg.com/three-globe/example/img/earth-night.jpg')
+      .bumpImageUrl('//unpkg.com/three-globe/example/img/earth-topology.png')
+      .backgroundImageUrl('//unpkg.com/three-globe/example/img/night-sky.png')
+      .pointsData(modifiedData.sort((a, b) => b.brightness - a.brightness).slice(0, showNumData))
+      .pointAltitude('brightness')
+      .pointColor(d => brightnessToColor(d.brightness))
+      .onPointClick(d => {
+        const details = getDetail(d);
+        // Display details
+      })
+  // .hexBinPointWeight('pop')
+  // .hexAltitude(d => d.sumWeight * 6e-8)
+  // .hexBinResolution(4)
+  // .hexTopColor(d => weightColor(d.sumWeight))
+  // .hexSideColor(d => weightColor(d.sumWeight))
+  // .hexBinMerge(true)
+  // .enablePointerInteraction(false) // performance improvement
+  // .pointColor('red');
+  // .pointsData(data);
+  /*issues/todo
+    too slow to load
+    color should change with height
+    need to show states
+    change style of bg and globe?
+    center it on the US
+    display data on hover
+    adjust zoom level
+    only allow rotation viewing of US, not other countries
+  */
+
+  function handleResize() {
+    const width = container.clientWidth;
+    const height = container.clientHeight;
+    world.width(width).height(height).redraw();
+  }
+
+  // Add event listener for window resize
+  window.addEventListener('resize', handleResize);
+
+  // Initial call to set up the initial size
+  handleResize();
+}
+
+function normalize(x) {
+  let xminimum = x.reduce((min, current) => (current < min) ? current : min)
+  let xmaximum = x.reduce((max, current) => (current > max) ? current : max)
+  let xnormalized = x.map((item) => (item * 0.0001));
+  return xnormalized;
 }
 
 function formatTime(timeStr) {
