@@ -250,6 +250,7 @@ document.getElementById('dateFilter').addEventListener('change', () => loadYearD
 document.getElementById('monthSlider').addEventListener('change', () => loadYearData(document.getElementById('yearSlider').value));
 document.getElementById('yearSlider').addEventListener('change', () => loadYearData(document.getElementById('yearSlider').value));
 
+
 function createGeoGraph(data, currentZoom, currentCenter, style) {
   if (is3D) {
     create3DMap(data);
@@ -259,7 +260,28 @@ function createGeoGraph(data, currentZoom, currentCenter, style) {
 }
 
 function create2DMap(data, currentZoom, currentCenter, style) {
-  let opacities = data.map(d => d.bright_t31 * 0.0025);
+
+  let minBrightness = data.reduce((min, p) => p.bright_t31 < min ? p.bright_t31 : min, data[0].bright_t31);
+  let maxBrightness = data.reduce((max, p) => p.bright_t31 > max ? p.bright_t31 : max, data[0].bright_t31);
+  let colors = data.map(d => brightnessToColor(d.bright_t31));
+
+  function brightnessToColor(brightness) {
+    const max = maxBrightness;
+    const hue = (1 - brightness / max) * 240;
+    return `hsl(${hue}, 100%, 50%)`;
+  }
+
+
+  function updateColorRangeBar(minValue, maxValue) {
+    const gradientStart = brightnessToColor(minValue);
+    const gradientEnd = brightnessToColor(maxValue);
+    const colorRangeBar = document.getElementById('colorRangeBar');
+    colorRangeBar.style.background = `linear-gradient(to right, ${gradientStart}, ${gradientEnd})`;
+  }
+
+// Call this function with the min and max values of your data
+  updateColorRangeBar(minBrightness, maxBrightness);
+
 
   let trace = [
     {
@@ -273,9 +295,9 @@ function create2DMap(data, currentZoom, currentCenter, style) {
       hoverinfo: 'text',
       customdata: data.map(d => getDetail(d)),
       marker: {
-        color: 'orange',
+        color: colors,
         size: 12,
-        opacity: opacities
+        opacity: 0.8
       }
     }
   ];
