@@ -132,13 +132,17 @@ const statesZoom = {
 
 let currentCenter = null;
 
+document.addEventListener('DOMContentLoaded', function() {
+  updateDateRange();
+});
+
 function filterData(data) {
   let filteredData = data;
   const stateFilter = document.getElementById('stateFilter').value;
   const dayNightFilter = document.getElementById('dayNightFilter').value;
   const typeFilter = document.getElementById('typeFilter').value;
   const dateFilter = document.getElementById('dateFilter').value;
-  const monthFilter = document.getElementById('monthFilter').value;
+  const monthFilter = document.getElementById('monthSlider').value;
 
   if (stateFilter === "Select State") {
     return filteredData;
@@ -156,12 +160,16 @@ function filterData(data) {
   if (dateFilter) {
     filteredData = filteredData.filter(d => d.acq_date === dateFilter);
   }
+  if (monthFilter == "0") {
+    return filteredData;
+  }
   if (monthFilter) {
     filteredData = filteredData.filter(d => {
       const month = new Date(d.acq_date).getMonth() + 1;
       return month.toString() === monthFilter;
     });
   }
+  console.log(filteredData);
   return filteredData;
 }
 
@@ -170,12 +178,6 @@ function loadYearData(year) {
   let currentLayout = getPlotlyLayout('mapContainer');
   currentCenter = currentLayout.center;
   currentZoom = currentLayout.zoom;
-
-  // Set the min and max dates for the date input
-  const minDate = `${year}-01-01`; // first day of the year
-  const maxDate = `${year}-12-31`; // last day of the year
-  document.getElementById('dateFilter').setAttribute('min', minDate);
-  document.getElementById('dateFilter').setAttribute('max', maxDate);
 
   d3.csv(dataPath).then((data) => {
     let filteredData = filterData(data);
@@ -189,19 +191,51 @@ function loadYearData(year) {
   });
 }
 
-document.getElementById('yearSlider').addEventListener('input', function(e) {
-  const year = e.target.value;
+
+document.getElementById('yearSlider').addEventListener('input', function() {
+  const year = this.value;
   document.getElementById('yearDisplay').textContent = year;
-  loadYearData(year);
+  updateDateRange();
 });
 
-loadYearData(document.getElementById('yearSlider').value);
+document.getElementById('monthSlider').addEventListener('input', function() {
+  const month = this.value;
+  document.getElementById('monthDisplay').textContent = month;
+  updateDateRange();
+});
+
+function updateDateRange() {
+  const year = document.getElementById('yearSlider').value;
+  const month = document.getElementById('monthSlider').value;
+
+  let minDate, maxDate;
+  if (month === "0") { // Represents the whole year
+    minDate = `${year}-01-01`;
+    maxDate = `${year}-12-31`;
+    document.getElementById('monthDisplay').textContent = "All";
+  } else {
+    const daysInMonth = new Date(year, month, 0).getDate();
+    minDate = `${year}-${String(month).padStart(2, '0')}-01`;
+    maxDate = `${year}-${String(month).padStart(2, '0')}-${daysInMonth}`;
+    document.getElementById('monthDisplay').textContent = month;
+  }
+
+  document.getElementById('dateFilter').setAttribute('min', minDate);
+  document.getElementById('dateFilter').setAttribute('max', maxDate);
+}
+
+
+
+//default value
+loadYearData('2001');
+
 
 document.getElementById('stateFilter').addEventListener('change', () => loadYearData(document.getElementById('yearSlider').value));
 document.getElementById('dayNightFilter').addEventListener('change', () => loadYearData(document.getElementById('yearSlider').value));
 document.getElementById('typeFilter').addEventListener('change', () => loadYearData(document.getElementById('yearSlider').value));
 document.getElementById('dateFilter').addEventListener('change', () => loadYearData(document.getElementById('yearSlider').value));
-document.getElementById('monthFilter').addEventListener('change', () => loadYearData(document.getElementById('yearSlider').value));
+document.getElementById('monthSlider').addEventListener('change', () => loadYearData(document.getElementById('yearSlider').value));
+document.getElementById('yearSlider').addEventListener('change', () => loadYearData(document.getElementById('yearSlider').value));
 
 function createGeoGraph(data, currentZoom, currentCenter, style) {
   if (is3D) {
@@ -213,7 +247,6 @@ function createGeoGraph(data, currentZoom, currentCenter, style) {
 
 function create2DMap(data, currentZoom, currentCenter, style) {
   let opacities = data.map(d => d.bright_t31 * 0.0025);
-  console.log(opacities);
 
   let trace = [
     {
