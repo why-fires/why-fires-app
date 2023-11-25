@@ -6,6 +6,9 @@
   <title>Why Fires</title>
   <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
   <script src="https://cdn.plot.ly/plotly-2.26.0.min.js" charset="utf-8"></script>
+  <script src="//unpkg.com/d3"></script>
+  <script src="//unpkg.com/d3-dsv"></script>
+  <script src="//unpkg.com/globe.gl"></script>
   <link href="stylesheet.css" rel="stylesheet">
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 </head>
@@ -92,7 +95,15 @@
           <input type="date" id="dateFilter">
         </div>
 
+
+    <button id="toggle3D">Toggle 3D View</button>
+    <div  id="mapContainer" style="width: 80%; height: 500px; float: left;">
+      <div id="map2D"></div>
+      <div id="map3D"></div>
+    </div>
         <button id="toggle3D">Toggle 3D View</button>
+        <input type="number" id="showNumDataInput" placeholder="Enter number of data points" value="20000">
+        <button id="showNumDataButton">Apply</button>
 
         <div id="slider">
           <input type="range" id="monthSlider" min="0" max="12" value="0">
@@ -124,6 +135,6 @@
 <footer>
 
 </footer>
-<script src="app.js"></script>
+<script src="app.js" type="module"></script>
 </body>
 </html>
