@@ -7,15 +7,18 @@
   <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
   <script src="https://cdn.plot.ly/plotly-2.26.0.min.js" charset="utf-8"></script>
   <link href="stylesheet.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 </head>
 <body>
 <header>
-  <h1 id="title">Why Fires</h1>
 </header>
 <main>
-  <div id="container" class="center">
-    <div id="mapContainer">
+  <div id="container" class="wrapper side-panel-open">
+    <div class="main">
+      <div id="mapContainer"></div>
+    </div>
 
+    <div class="side-panel">
       <div id="infoContainer">
         <div id="filter">
           <select id="stateFilter">
@@ -87,28 +90,15 @@
           </select>
 
           <input type="date" id="dateFilter">
-          <select id="monthFilter">
-            <option value="">Select Month</option>
-            <option value="1">January</option>
-            <option value="2">February</option>
-            <option value="3">March</option>
-            <option value="4">April</option>
-            <option value="5">May</option>
-            <option value="6">June</option>
-            <option value="7">July</option>
-            <option value="8">August</option>
-            <option value="9">September</option>
-            <option value="10">October</option>
-            <option value="11">November</option>
-            <option value="12">December</option>
-          </select>
         </div>
 
         <button id="toggle3D">Toggle 3D View</button>
 
         <div id="slider">
-          <input type="range" id="yearSlider" min="2012" max="2022" value="2012">
-          <h2 id="yearDisplay">2012</h2>
+          <input type="range" id="monthSlider" min="0" max="12" value="0">
+          <span id="monthDisplay">All</span>
+          <input type="range" id="yearSlider" min="2001" max="2022" value="2001">
+          <span id="yearDisplay">2001</span>
         </div>
 
         <div id="detailContainer">
@@ -119,6 +109,11 @@
         </div>
       </div>
     </div>
+
+    <button class="side-panel-toggle" type="button">
+      <span class="material-icons sp-icon-open">keyboard_double_arrow_right</span>
+      <span class="material-icons sp-icon-close">keyboard_double_arrow_left</span>
+    </button>
 
   </div>
 
