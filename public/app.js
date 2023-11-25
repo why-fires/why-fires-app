@@ -130,6 +130,22 @@ const statesZoom = {
   'Wyoming': 6
 };
 
+const monthText = {
+  0: 'All',
+  1: 'January',
+  2: 'February',
+  3: 'March',
+  4: 'April',
+  5: 'May',
+  6: 'June',
+  7: 'July',
+  8: 'August',
+  9: 'September',
+  10: 'October',
+  11: 'November',
+  12: 'December'
+};
+
 let currentCenter = null;
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -163,13 +179,12 @@ function filterData(data) {
   if (monthFilter == "0") {
     return filteredData;
   }
-  if (monthFilter) {
+  if (monthFilter !== "0") {
     filteredData = filteredData.filter(d => {
       const month = new Date(d.acq_date).getMonth() + 1;
       return month.toString() === monthFilter;
     });
   }
-  console.log(filteredData);
   return filteredData;
 }
 
@@ -200,7 +215,7 @@ document.getElementById('yearSlider').addEventListener('input', function() {
 
 document.getElementById('monthSlider').addEventListener('input', function() {
   const month = this.value;
-  document.getElementById('monthDisplay').textContent = month;
+  document.getElementById('monthDisplay').textContent = monthText[month];
   updateDateRange();
 });
 
@@ -212,18 +227,16 @@ function updateDateRange() {
   if (month === "0") { // Represents the whole year
     minDate = `${year}-01-01`;
     maxDate = `${year}-12-31`;
-    document.getElementById('monthDisplay').textContent = "All";
   } else {
     const daysInMonth = new Date(year, month, 0).getDate();
     minDate = `${year}-${String(month).padStart(2, '0')}-01`;
     maxDate = `${year}-${String(month).padStart(2, '0')}-${daysInMonth}`;
-    document.getElementById('monthDisplay').textContent = month;
+    document.getElementById('monthDisplay').textContent = monthText[month];
   }
 
   document.getElementById('dateFilter').setAttribute('min', minDate);
   document.getElementById('dateFilter').setAttribute('max', maxDate);
 }
-
 
 
 //default value
@@ -256,7 +269,9 @@ function create2DMap(data, currentZoom, currentCenter, style) {
       mode: 'markers',
       lat: data.map(d => d.latitude),
       lon: data.map(d => d.longitude),
-      text: data.map(d => getDetail(d)),
+      text: data.map(d => `<b>Latitude:</b> ${d.latitude}<br><b>Longitude:</b> ${d.longitude}`),
+      hoverinfo: 'text',
+      customdata: data.map(d => getDetail(d)),
       marker: {
         color: 'orange',
         size: 12,
@@ -297,7 +312,7 @@ function create2DMap(data, currentZoom, currentCenter, style) {
   Plotly.newPlot('mapContainer', trace, layout, config);
 
   mapContainer.on('plotly_click', function(data){
-    var infotext = data.points[0].data.text[data.points[0].pointIndex];
+    var infotext = data.points[0].data.customdata[data.points[0].pointIndex];
 
     var detailsBox = document.getElementById('detailBox');
     detailsBox.style.display = 'block';
