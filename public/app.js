@@ -139,56 +139,64 @@ function create3DMap(data) {
   container.style.display = 'block';
 
   // Normalize brightness
-  let brightnessArr = data.map(obj => obj.brightness);
+  let brightnessArr = data.map(obj => obj.bright_t31);
   brightnessArr = normalize(brightnessArr);
-  data = data.map((obj, index) => {
-    return { ...obj, brightness: brightnessArr[index] };
-  });
+  data = data.map((obj, index) => ({ ...obj, brightness: brightnessArr[index] }));
 
   // Rename keys
   const modifiedData = data.map(obj => ({
-    lat: obj.latitude, //rename key to lat
-    lng: obj.longitude, //rename key to lng
-    brightness: obj.brightness //unchanged
+    lat: obj.latitude,
+    lng: obj.longitude,
+    brightness: obj.brightness
   }));
 
+  function brightnessToColor(brightness) {
+    const maxBrightness = 0.03751; // Assuming max brightness is scaled to 5
+    const hue = (1 - brightness / maxBrightness) * 240; // Scale to a hue value
+    return `hsl(${hue}, 100%, 50%)`;
+  }
+
+  // Initialize the globe
   const world = Globe();
   world(container)
-    .globeImageUrl('//unpkg.com/three-globe/example/img/earth-night.jpg')
-    .bumpImageUrl('//unpkg.com/three-globe/example/img/earth-topology.png')
-    .backgroundImageUrl('//unpkg.com/three-globe/example/img/night-sky.png')
-    // .hexBinPointWeight('pop')
-    // .hexAltitude(d => d.sumWeight * 6e-8)
-    // .hexBinResolution(4)
-    // .hexTopColor(d => weightColor(d.sumWeight))
-    // .hexSideColor(d => weightColor(d.sumWeight))
-    // .hexBinMerge(true)
-    // .enablePointerInteraction(false) // performance improvement
-    .pointsData(modifiedData.slice(0, 100)) // .slice(0, 100)
-    .pointAltitude('brightness')
-    .onPointClick(getDetail(data[0]));
-    // .pointColor('red');
-    // .pointsData(data);
-
-    /*issues/todo
-      too slow to load
-      color should change with height
-      need to show states
-      change style of bg and globe?
-      center it on the US
-      display data on hover
-      adjust zoom level
-      only allow rotation viewing of US, not other countries
-    */
+      .globeImageUrl('//unpkg.com/three-globe/example/img/earth-night.jpg')
+      .bumpImageUrl('//unpkg.com/three-globe/example/img/earth-topology.png')
+      .backgroundImageUrl('//unpkg.com/three-globe/example/img/night-sky.png')
+      .pointsData(modifiedData)
+      .pointAltitude('brightness')
+      .pointColor(d => brightnessToColor(d.brightness))
+      .onPointClick(d => {
+        const details = getDetail(d);
+        // Display details
+      })
+  // .hexBinPointWeight('pop')
+  // .hexAltitude(d => d.sumWeight * 6e-8)
+  // .hexBinResolution(4)
+  // .hexTopColor(d => weightColor(d.sumWeight))
+  // .hexSideColor(d => weightColor(d.sumWeight))
+  // .hexBinMerge(true)
+  // .enablePointerInteraction(false) // performance improvement
+  // .pointColor('red');
+  // .pointsData(data);
+  /*issues/todo
+    too slow to load
+    color should change with height
+    need to show states
+    change style of bg and globe?
+    center it on the US
+    display data on hover
+    adjust zoom level
+    only allow rotation viewing of US, not other countries
+  */
 }
 
 function normalize(x) {
   let xminimum = x.reduce((min, current) => (current < min) ? current : min)
   let xmaximum = x.reduce((max, current) => (current > max) ? current : max)
-  let xnormalized = x.map((item) => (item - xminimum) / (xmaximum - xminimum))
-
-  // console.log("min" + xminimum);
-  // console.log("max" + xmaximum);
+  let xnormalized = x.map((item) => (item * 0.0001));
+  console.log("min" + xminimum);
+  console.log("max" + xmaximum);
+  console.log(xnormalized);
   return xnormalized;
 }
 
