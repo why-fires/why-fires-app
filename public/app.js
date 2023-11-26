@@ -77,6 +77,59 @@ const statesLonLat = {
   'Wyoming': {lat: 43.0759, lon: -107.2903},
 }
 
+const statesLonLat3D = {
+  'Alabama': {lat: 32.7182, lng: -86.9023, altitude: 1.1111111111111112},
+  'Alaska': {lat: 62.4673, lng: -151.2874, altitude: 2.0},
+  'Arizona': {lat: 34.0784, lng: -112.0740, altitude: 1.1666666666666667},
+  'Arkansas': {lat: 34.7465, lng: -92.2896, altitude: 1.0606060606060606},
+  'California': {lat: 36.7783, lng: -119.4179, altitude: 1.4},
+  'Colorado': {lat: 39.1501, lng: -105.7821, altitude: 1.09375},
+  'Connecticut': {lat: 41.6032, lng: -73.0877, altitude: 0.9090909090909091},
+  'Delaware': {lat: 39.2108, lng: -75.5277, altitude: 0.9090909090909091},
+  'Florida': {lat: 27.9944, lng: -81.7603, altitude: 1.1864406779661016},
+  'Georgia': {lat: 33.0406, lng: -83.6431, altitude: 1.1475409836065575},
+  'Hawaii': {lat: 20.6987, lng: -157.6659, altitude: 1.09375},
+  'Idaho': {lat: 45.3682, lng: -114.7420, altitude: 1.2962962962962963},
+  'Illinois': {lat: 39.7331, lng: -89.3985, altitude: 1.1864406779661016},
+  'Indiana': {lat: 39.8512, lng: -85.6024, altitude: 1.1111111111111112},
+  'Iowa': {lat: 41.8780, lng: -93.0977, altitude: 1.09375},
+  'Kansas': {lat: 39.0119, lng: -98.4842, altitude: 1.129032258064516},
+  'Kentucky': {lat: 37.8393, lng: -84.2700, altitude: 1.129032258064516},
+  'Louisiana': {lat: 31.1695, lng: -91.8678, altitude: 1.1111111111111112},
+  'Maine': {lat: 45.2538, lng: -69.4455, altitude: 1.1864406779661016},
+  'Maryland': {lat: 39.0458, lng: -76.6413, altitude: 1.0769230769230769},
+  'Massachusetts': {lat: 42.1072, lng: -71.3824, altitude: 0.9459459459459459},
+  'Michigan': {lat: 44.3148, lng: -85.6024, altitude: 1.2068965517241381},
+  'Minnesota': {lat: 46.5296, lng: -94.6859, altitude: 1.25},
+  'Mississippi': {lat: 32.3547, lng: -89.3985, altitude: 1.1475409836065575},
+  'Missouri': {lat: 37.9643, lng: -91.8318, altitude: 1.1864406779661016},
+  'Montana': {lat: 46.8797, lng: -110.3626, altitude: 1.2962962962962963},
+  'Nebraska': {lat: 41.4925, lng: -99.9018, altitude: 1.2068965517241381},
+  'Nevada': {lat: 38.8026, lng: -116.4194, altitude: 1.2727272727272727},
+  'New Hampshire': {lat: 43.7939, lng: -71.5724, altitude: 1.0294117647058825},
+  'New Jersey': {lat: 40.0583, lng: -74.4057, altitude: 1.0294117647058825},
+  'New Mexico': {lat: 34.7869, lng: -105.9378, altitude: 1.2068965517241381},
+  'New York': {lat: 42.1657, lng: -74.9481, altitude: 1.2962962962962963},
+  'North Carolina': {lat: 35.7596, lng: -79.0193, altitude: 1.1475409836065575},
+  'North Dakota': {lat: 47.5515, lng: -101.0020, altitude: 1.2068965517241381},
+  'Ohio': {lat: 40.4173, lng: -82.9071, altitude: 1.1666666666666667},
+  'Oklahoma': {lat: 35.0078, lng: -97.0929, altitude: 1.1475409836065575},
+  'Oregon': {lat: 44.0282, lng: -120.3215, altitude: 1.1864406779661016},
+  'Pennsylvania': {lat: 41.2033, lng: -77.1945, altitude: 1.129032258064516},
+  'Rhode Island': {lat: 41.7201, lng: -71.4774, altitude: 0.7954545454545453},
+  'South Carolina': {lat: 33.8361, lng: -81.1637, altitude: 1.1111111111111112},
+  'South Dakota': {lat: 43.9695, lng: -99.9018, altitude: 1.25},
+  'Tennessee': {lat: 35.5175, lng: -86.5804, altitude: 1.129032258064516},
+  'Texas': {lat: 31.9686, lng: -99.9018, altitude: 1.4},
+  'Utah': {lat: 39.3210, lng: -111.0937, altitude: 1.25},
+  'Vermont': {lat: 44.0588, lng: -72.5778, altitude: 1.09375},
+  'Virginia': {lat: 37.7693, lng: -78.1700, altitude: 1.129032258064516},
+  'Washington': {lat: 47.4242, lng: -120.2272, altitude: 1.1111111111111112},
+  'West Virginia': {lat: 38.5976, lng: -80.4549, altitude: 1.1111111111111112},
+  'Wisconsin': {lat: 44.8929, lng: -89.5094, altitude: 1.1666666666666667},
+  'Wyoming': {lat: 43.0759, lng: -107.2903, altitude: 1.1666666666666667}
+};
+
 const statesZoom = {
   'Alabama' : 6.3,
   'Alaska': 3.5,
@@ -190,7 +243,7 @@ function filterData(data) {
 
 function loadYearData(year) {
   const dataPath = `./data/modis_${year}_United_States.csv`;
-  let currentLayout = getPlotlyLayout('mapContainer');
+  let currentLayout = getPlotlyLayout('map2D');
   currentCenter = currentLayout.center;
   currentZoom = currentLayout.zoom;
 
@@ -253,13 +306,19 @@ document.getElementById('yearSlider').addEventListener('change', () => loadYearD
 
 function createGeoGraph(data, currentZoom, currentCenter, style) {
   if (is3D) {
-    create3DMap(data);
+    let states = document.getElementById('stateFilter').value;
+    currentCenter = statesLonLat3D[states];
+    create3DMap(data, currentCenter);
   } else {
     create2DMap(data, currentZoom, currentCenter, style);
   }
 }
 
 function create2DMap(data, currentZoom, currentCenter, style) {
+  document.getElementById('toggle3D').innerHTML = "Toggle 3D View";
+  document.getElementById('map3D').style.display = 'none';
+  const container = document.getElementById('map2D');
+  container.style.display = 'block';
 
   let minBrightness = data.reduce((min, p) => p.bright_t31 < min ? p.bright_t31 : min, data[0].bright_t31);
   let maxBrightness = data.reduce((max, p) => p.bright_t31 > max ? p.bright_t31 : max, data[0].bright_t31);
@@ -331,9 +390,9 @@ function create2DMap(data, currentZoom, currentCenter, style) {
 
   let config = {responsive: true, displayModeBar: false, mapboxAccessToken: 'pk.eyJ1IjoiYWxleGFuZGVyaHVuZyIsImEiOiJjbG8xY2VnMXcwc2x0MmxvZHBmNTVpYjM3In0.nghzNs8d4lg_MLvHETaB_w'}
 
-  Plotly.newPlot('mapContainer', trace, layout, config);
+  Plotly.newPlot('map2D', trace, layout, config);
 
-  mapContainer.on('plotly_click', function(data){
+  map2D.on('plotly_click', function(data){
     var infotext = data.points[0].data.customdata[data.points[0].pointIndex];
 
     var detailsBox = document.getElementById('detailBox');
@@ -342,15 +401,134 @@ function create2DMap(data, currentZoom, currentCenter, style) {
   });
 }
 
-function create3DMap(data) {
-  //const container = document.getElementById('mapContainer');
-  //container.innerHTML = '';
+function create3DMap(data, currentCenter) {
+  document.getElementById('toggle3D').innerHTML = "Toggle 2D View";
+  document.getElementById('map2D').style.display = 'none';
+  const container = document.getElementById('map3D');
+  container.style.display = 'block';
 
+  // Add an event listener to the button
+  document.getElementById('showNumDataButton').addEventListener('click', function () {
+    updateNumDataPoints();
+  });
+
+  let showNumData = 20000;
+
+  function updateNumDataPoints() {
+    const showNumDataInput = document.getElementById('showNumDataInput');
+    showNumData = parseInt(showNumDataInput.value);
+
+    // Check if the input value is a valid number
+    if (!isNaN(showNumData)) {
+      // Update the number of data points on the map
+      world.pointsData(modifiedData.sort((a, b) => b.brightness - a.brightness).slice(0, showNumData));
+    } else {
+      // Handle invalid input (e.g., display an error message)
+      alert('Please enter a valid number of data points.');
+    }
+  }
+
+  let minBrightness = data.reduce((min, p) => p.bright_t31 < min ? p.bright_t31 : min, data[0].bright_t31);
+  let maxBrightness = data.reduce((max, p) => p.bright_t31 > max ? p.bright_t31 : max, data[0].bright_t31);
+
+  // Normalize brightness
+  let brightnessArr = data.map(obj => obj.bright_t31);
+  brightnessArr = normalize(brightnessArr);
+  data = data.map((obj, index) => ({ ...obj, brightness: brightnessArr[index] }));
+
+  // Rename keys
+  const modifiedData = data.map(obj => ({
+    lat: obj.latitude,
+    lng: obj.longitude,
+    temp: obj.bright_t31,
+    brightness: obj.brightness,
+    state: obj.state_name,
+    date: obj.acq_date,
+    time: formatTime(obj.acq_time),
+    dayNight: dayNightMapping[obj.daynight] || 'Unknown',
+    type: typeMapping[obj.type] || 'Unknown',
+    satellite: obj.satellite
+  }));
+  function brightnessToColor(brightness) {
+    const max = maxBrightness * 0.0001; // Assuming max brightness is scaled to 5
+    const hue = (1 - brightness / max) * 240; // Scale to a hue value
+    return `hsl(${hue}, 100%, 50%)`;
+  }
+
+  function handlePointClick(pointData) {
+    const detailBox = document.getElementById('detailBox');
+    // Format the data to be displayed, e.g., as a string or HTML
+    const dataDetails = `
+    <b>State:</b> ${pointData.state}<br> 
+    <b>Latitude:</b> ${pointData.lat}<br> 
+    <b>Longitude:</b> ${pointData.lng}<br> 
+    <b>Date:</b> ${pointData.date}<br>
+    <b>Time:</b> ${pointData.time}<br>
+    <b>DayNight:</b> ${pointData.dayNight}<br>
+    <b>Type:</b> ${pointData.type}<br>
+    <b>Brightness(Temperature):</b> ${pointData.temp}
+    <b>Satellite:</b> ${pointData.satellite}<br>`;
+
+    // Display the data in the detailBox
+    detailBox.innerHTML = dataDetails;
+  }
+
+  // Initialize the globe
+  const world = Globe();
+  world(container)
+      .globeImageUrl('//unpkg.com/three-globe/example/img/earth-night.jpg')
+      .bumpImageUrl('//unpkg.com/three-globe/example/img/earth-topology.png')
+      .backgroundImageUrl('//unpkg.com/three-globe/example/img/night-sky.png')
+      .pointsData(modifiedData.sort((a, b) => b.brightness - a.brightness).slice(0, showNumData))
+      .pointAltitude('brightness')
+      .pointColor(d => brightnessToColor(d.brightness))
+      .onPointClick(handlePointClick)
+  // .hexBinPointWeight('pop')
+  // .hexAltitude(d => d.sumWeight * 6e-8)
+  // .hexBinResolution(4)
+  // .hexTopColor(d => weightColor(d.sumWeight))
+  // .hexSideColor(d => weightColor(d.sumWeight))
+  // .hexBinMerge(true)
+  // .enablePointerInteraction(false) // performance improvement
+  // .pointColor('red');
+  // .pointsData(data);
+  /*issues/todo
+    need to show states
+    change style of bg and globe?
+    display data on hover
+    only allow rotation viewing of US, not other countries
+  */
+
+  world.pointOfView(currentCenter || { lat: 39.8, lng: -120.6, altitude: 1.5 });
+
+  function handleResize() {
+    const width = container.clientWidth;
+    const height = container.clientHeight;
+    world.width(width).height(height);
+  }
+
+  // Add event listener for window resize
+  window.addEventListener('resize', handleResize);
+
+  // Initial call to set up the initial size
+  handleResize();
+}
+
+function normalize(x) {
+  let xminimum = x.reduce((min, current) => (current < min) ? current : min)
+  let xmaximum = x.reduce((max, current) => (current > max) ? current : max)
+  let xnormalized = x.map((item) => (item * 0.0001));
+  return xnormalized;
 }
 
 function formatTime(timeStr) {
-  return timeStr.padStart(4, '0').replace(/^(..)(..)$/, '$1:$2');
+  if (typeof timeStr === 'string' && timeStr) {
+    return timeStr.padStart(4, '0').replace(/^(..)(..)$/, '$1:$2');
+  } else {
+    return 'Time not available';
+  }
 }
+
 
 function updateDataCount(count) {
   document.getElementById('totalDataPoints').textContent = count;
