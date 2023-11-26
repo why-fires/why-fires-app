@@ -492,7 +492,7 @@ function create3DMap(data, currentCenter) {
 
     if (point) {
       // Format and display the data in hoverInfo
-      hoverInfo.innerHTML = `Hovered Point - Latitude: ${point.lat}, Longitude: ${point.lng}`;
+      hoverInfo.innerHTML = `Latitude: ${point.lat}, Longitude: ${point.lng}`;
 
       // Use the brightnessToColor function to get the color based on point data
       const pointColor = brightnessToColor(point.brightness);
