@@ -77,8 +77,13 @@ body {
   margin: 10px;
 }
 
-body {
-  background-color: black;
+#hoverInfo {
+  position: absolute;
+  display: none;
+  width: 200px;
+  border: 2px solid black;
+  padding: 5px;
+  color: black;
 }
 
 .knobs,

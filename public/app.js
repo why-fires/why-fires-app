@@ -1,4 +1,12 @@
 let is3D = false;
+
+let mousePosition = { x: 0, y: 0 };
+
+document.addEventListener('mousemove', (event) => {
+  mousePosition.x = event.clientX;
+  mousePosition.y = event.clientY;
+});
+
 document.getElementById('toggle3D').addEventListener('click', function() {
   is3D = !is3D; // Toggle the is3D flag
   loadYearData(document.getElementById('yearSlider').value);
@@ -363,8 +371,6 @@ function create2DMap(data, currentZoom, currentCenter, style) {
   let trace = [
     {
       type: 'scattermapbox',
-      //type: 'scattergeo',
-      //locationmode: 'USA-states',
       mode: 'markers',
       lat: data.map(d => d.latitude),
       lon: data.map(d => d.longitude),
@@ -381,14 +387,7 @@ function create2DMap(data, currentZoom, currentCenter, style) {
 
   let layout = {
     autosize: true,
-    //geo: {
-    //  scope: 'usa',
-    //  projection: {
-    //    type: 'albers usa'
-    //  },
-    //},
     mapbox: {
-      //style: 'carto-positron',
       style: style || 'carto-positron',
       center: currentCenter || { lat: 37.0902, lon: -95.7129 },
       zoom: currentZoom || 3
@@ -400,8 +399,6 @@ function create2DMap(data, currentZoom, currentCenter, style) {
       t: 0,
       pad: 0
     },
-    //height: window.innerHeight,
-    //width: window.innerWidth,
     paper_bgcolor: '#191A1A',
     plot_bgcolor: '#191A1A',
   };
@@ -490,6 +487,30 @@ function create3DMap(data, currentCenter) {
     detailBox.innerHTML = dataDetails;
   }
 
+  function handlePointHover(point, prevPoint) {
+    const hoverInfo = document.getElementById('hoverInfo');
+
+    if (point) {
+      // Format and display the data in hoverInfo
+      hoverInfo.innerHTML = `Hovered Point - Latitude: ${point.lat}, Longitude: ${point.lng}`;
+
+      // Use the brightnessToColor function to get the color based on point data
+      const pointColor = brightnessToColor(point.brightness);
+
+      // Set the background and border color of the tooltip
+      hoverInfo.style.background = pointColor;
+      hoverInfo.style.borderColor = pointColor;
+
+      // Position the tooltip
+      hoverInfo.style.left = (mousePosition.x + 20) + 'px';
+      hoverInfo.style.top = (mousePosition.y + 10) + 'px';
+      hoverInfo.style.display = 'block';
+    } else if (prevPoint) {
+      hoverInfo.style.display = 'none';
+    }
+  }
+
+
   // Initialize the globe
   const world = Globe();
   world(container)
@@ -500,6 +521,8 @@ function create3DMap(data, currentCenter) {
       .pointAltitude('brightness')
       .pointColor(d => brightnessToColor(d.brightness))
       .onPointClick(handlePointClick)
+      .pointsMerge(false)
+      .onPointHover(handlePointHover)
   // .hexBinPointWeight('pop')
   // .hexAltitude(d => d.sumWeight * 6e-8)
   // .hexBinResolution(4)
@@ -510,8 +533,6 @@ function create3DMap(data, currentCenter) {
   // .pointColor('red');
   // .pointsData(data);
   /*issues/todo
-    need to show states
-    change style of bg and globe?
     display data on hover
     only allow rotation viewing of US, not other countries
   */
