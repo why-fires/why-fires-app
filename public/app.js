@@ -303,6 +303,25 @@ document.getElementById('dateFilter').addEventListener('change', () => loadYearD
 document.getElementById('monthSlider').addEventListener('change', () => loadYearData(document.getElementById('yearSlider').value));
 document.getElementById('yearSlider').addEventListener('change', () => loadYearData(document.getElementById('yearSlider').value));
 
+document.addEventListener('DOMContentLoaded', () => {
+  // Reference to the checkbox inside the toggle3D div
+  const toggleCheckbox = document.querySelector('#toggle3D .checkbox');
+
+  // Event listener for the checkbox change
+  toggleCheckbox.addEventListener('change', function() {
+    if (this.checked) {
+      // Checkbox is checked - switch to 3D view
+      document.getElementById('map2D').style.display = 'none';
+      document.getElementById('map3D').style.display = 'block';
+    } else {
+      // Checkbox is not checked - switch to 2D view
+      document.getElementById('map2D').style.display = 'block';
+      document.getElementById('map3D').style.display = 'none';
+    }
+  });
+
+});
+
 
 function createGeoGraph(data, currentZoom, currentCenter, style) {
   if (is3D) {
@@ -315,7 +334,6 @@ function createGeoGraph(data, currentZoom, currentCenter, style) {
 }
 
 function create2DMap(data, currentZoom, currentCenter, style) {
-  document.getElementById('toggle3D').innerHTML = "Toggle 3D View";
   document.getElementById('map3D').style.display = 'none';
   const container = document.getElementById('map2D');
   container.style.display = 'block';
@@ -402,7 +420,6 @@ function create2DMap(data, currentZoom, currentCenter, style) {
 }
 
 function create3DMap(data, currentCenter) {
-  document.getElementById('toggle3D').innerHTML = "Toggle 2D View";
   document.getElementById('map2D').style.display = 'none';
   const container = document.getElementById('map3D');
   container.style.display = 'block';
