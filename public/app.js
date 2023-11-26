@@ -192,7 +192,7 @@ const statesZoom = {
 };
 
 const monthText = {
-  0: 'All',
+  0: 'All Month',
   1: 'January',
   2: 'February',
   3: 'March',
@@ -414,6 +414,8 @@ function create2DMap(data, currentZoom, currentCenter, style) {
     detailsBox.style.display = 'block';
     detailsBox.innerHTML = infotext;
   });
+
+  document.getElementById('showNumData').style.display = 'none';
 }
 
 function create3DMap(data, currentCenter) {
@@ -481,7 +483,7 @@ function create3DMap(data, currentCenter) {
     <b>DayNight:</b> ${pointData.dayNight}<br>
     <b>Type:</b> ${pointData.type}<br>
     <b>Satellite:</b> ${pointData.satellite}<br>
-    <b>Brightness(Temperature):</b> ${pointData.temp}`;
+    <b>Brightness(Temperature):</b> ${pointData.temp} Kelvin`;
 
     // Display the data in the detailBox
     detailBox.innerHTML = dataDetails;
@@ -549,6 +551,8 @@ function create3DMap(data, currentCenter) {
 
   // Initial call to set up the initial size
   handleResize();
+
+  document.getElementById('showNumData').style.display = 'block';
 }
 
 function normalize(x) {

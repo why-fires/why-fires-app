@@ -46,7 +46,7 @@ body {
 .side-panel {
   position: absolute;
   display: none;
-  width: 250px;
+  width: 300px;
   height: 100vh;
   flex-shrink: 0;
   padding: 20px;
