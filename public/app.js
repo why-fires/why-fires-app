@@ -533,7 +533,6 @@ function create3DMap(data, currentCenter) {
   // .pointColor('red');
   // .pointsData(data);
   /*issues/todo
-    display data on hover
     only allow rotation viewing of US, not other countries
   */
 
