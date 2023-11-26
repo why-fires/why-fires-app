@@ -480,8 +480,8 @@ function create3DMap(data, currentCenter) {
     <b>Time:</b> ${pointData.time}<br>
     <b>DayNight:</b> ${pointData.dayNight}<br>
     <b>Type:</b> ${pointData.type}<br>
-    <b>Brightness(Temperature):</b> ${pointData.temp}
-    <b>Satellite:</b> ${pointData.satellite}<br>`;
+    <b>Satellite:</b> ${pointData.satellite}<br>
+    <b>Brightness(Temperature):</b> ${pointData.temp}`;
 
     // Display the data in the detailBox
     detailBox.innerHTML = dataDetails;
@@ -583,8 +583,9 @@ function getDetail(d) {
   <b>Time:</b> ${formatTime(d.acq_time)}<br>
   <b>DayNight:</b> ${dayNightDescription}<br>
   <b>Type:</b> ${typeDescription}<br>
-  <b>Brightness(Temperature):</b> ${d.bright_t31} Kelvin<br>
   <b>Satellite:</b> ${d.satellite}<br>
+  <b>Brightness(Temperature):</b> ${d.bright_t31} Kelvin<br>
+
             `;
 }
 
