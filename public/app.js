@@ -426,7 +426,7 @@ function create3DMap(data, currentCenter) {
     updateNumDataPoints();
   });
 
-  let showNumData = 20000;
+  let showNumData = 1000;
 
   function updateNumDataPoints() {
     const showNumDataInput = document.getElementById('showNumDataInput');
