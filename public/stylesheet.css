@@ -78,6 +78,7 @@ body {
 }
 
 #hoverInfo {
+  font-weight: bold;
   position: absolute;
   display: none;
   width: 200px;
