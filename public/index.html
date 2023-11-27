@@ -9,6 +9,7 @@
   <script src="//unpkg.com/d3"></script>
   <script src="//unpkg.com/d3-dsv"></script>
   <script src="//unpkg.com/globe.gl"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
   <link href="stylesheet.css" rel="stylesheet">
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 </head>
@@ -88,7 +89,68 @@
 
           <br />
 
-          <div class="select">
+          <div id="typeContainer">
+            <div id="topSection"> <!-- Always displays -->
+              <div id="topTitle">Type</div>
+              <div id="topButton">
+                <button id="nope" onclick="expandContract()"></button>
+              </div>
+            </div>
+            
+            <div id="expandContainer" class="collapsed"> <!-- Expands and contracts-->
+              <div id="expandContract" class="collapsed">
+                <p><b>Type of Fire</b></p>
+                <div class="checkbox-wrapper-29">
+                  <label class="checkbox">
+                    <input type="checkbox" class="checkbox__input" id="typePVF" value="0" checked />  
+                    <span class="checkbox__label"></span>
+                    &#128293 Presumed Vegetation Fire
+                  </label>
+                </div>
+                <div class="checkbox-wrapper-29">
+                  <label class="checkbox">
+                    <input type="checkbox" class="checkbox__input" id="typeOSLS" value="2" checked />  
+                    <span class="checkbox__label"></span>
+                    &#128270 Other Static Land Source
+                  </label>
+                </div>
+                <div class="checkbox-wrapper-29">
+                  <label class="checkbox">
+                    <input type="checkbox" class="checkbox__input" id="typeO" value="3" checked />  
+                    <span class="checkbox__label"></span>
+                    &#127754 Offshore
+                  </label>
+                </div>
+                <div class="checkbox-wrapper-29">
+                  <label class="checkbox">
+                    <input type="checkbox" class="checkbox__input" id="typeAV" value="1" checked />  
+                    <span class="checkbox__label"></span>
+                    &#127755 Active Volcano
+                  </label>
+                </div>
+
+                <p><b>Time of Fire</b></p>
+                <div class="checkbox-wrapper-29">
+                  <label class="checkbox">
+                    <input type="checkbox" class="checkbox__input" id="typeDay" value="D" checked />  
+                    <span class="checkbox__label"></span>
+                    Day
+                  </label>
+                </div>
+                <div class="checkbox-wrapper-29">
+                  <label class="checkbox">
+                    <input type="checkbox" class="checkbox__input" id="typeNight" value="N" checked />  
+                    <span class="checkbox__label"></span>
+                    Night
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <br />
+
+          <!-- <div class="select">
             <select id="dayNightFilter">
               <option value="">Day/Night</option>
               <option value="D">Day</option>
@@ -108,7 +170,7 @@
             </select>
           </div>
 
-          <br />
+          <br /> -->
 
           <input type="date" id="dateFilter">
         </div>
@@ -135,23 +197,6 @@
         </div>
 
         <button id="toggle3D">Toggle 3D View</button>
-
-        <!-- alternate style for toggle 3D button
-        <div id="colorRangeBar"></div>
-        <span>Color Range</span>
-
-        
-
-        <br></br>
-
-        <div class="button r" id="toggle3D">
-          <div title="Toggle 3D View"></div>
-          <input type="checkbox" class="checkbox"/>
-          <div class="knobs"></div>
-          <div class="layer"></div>
-        </div>
- -->
-        
 
       </div>
 
