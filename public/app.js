@@ -1,5 +1,12 @@
 let is3D = false;
 
+let mousePosition = { x: 0, y: 0 };
+
+document.addEventListener('mousemove', (event) => {
+  mousePosition.x = event.clientX;
+  mousePosition.y = event.clientY;
+});
+
 document.getElementById('toggle3D').addEventListener('click', function() {
   is3D = !is3D; // Toggle the is3D flag
   loadYearData(document.getElementById('yearSlider').value);
@@ -16,8 +23,8 @@ const typeMapping = {
 };
 
 const dayNightMapping = {
-  'D' : 'Daytime fire',
-  'N' : 'Nighttime fire'
+  'D' : 'Daytime Fire',
+  'N' : 'Nighttime Fire'
 }
 
 const dayNightStyle = {
@@ -185,7 +192,7 @@ const statesZoom = {
 };
 
 const monthText = {
-  0: 'All',
+  0: 'All Month',
   1: 'January',
   2: 'February',
   3: 'March',
@@ -304,6 +311,25 @@ document.getElementById('dateFilter').addEventListener('change', () => loadYearD
 document.getElementById('monthSlider').addEventListener('change', () => loadYearData(document.getElementById('yearSlider').value));
 document.getElementById('yearSlider').addEventListener('change', () => loadYearData(document.getElementById('yearSlider').value));
 
+document.addEventListener('DOMContentLoaded', () => {
+  // Reference to the checkbox inside the toggle3D div
+  const toggleCheckbox = document.querySelector('#toggle3D .checkbox');
+
+  // Event listener for the checkbox change
+  toggleCheckbox.addEventListener('change', function() {
+    if (this.checked) {
+      // Checkbox is checked - switch to 3D view
+      document.getElementById('map2D').style.display = 'none';
+      document.getElementById('map3D').style.display = 'block';
+    } else {
+      // Checkbox is not checked - switch to 2D view
+      document.getElementById('map2D').style.display = 'block';
+      document.getElementById('map3D').style.display = 'none';
+    }
+  });
+
+});
+
 
 function createGeoGraph(data, currentZoom, currentCenter, style) {
   if (is3D) {
@@ -317,6 +343,7 @@ function createGeoGraph(data, currentZoom, currentCenter, style) {
 
 function create2DMap(data, currentZoom, currentCenter, style) {
   document.getElementById('toggle3D').innerHTML = "<span class=\"material-icons\">public</span> Toggle 3D View";
+
   document.getElementById('map3D').style.display = 'none';
   const container = document.getElementById('map2D');
   container.style.display = 'block';
@@ -346,12 +373,10 @@ function create2DMap(data, currentZoom, currentCenter, style) {
   let trace = [
     {
       type: 'scattermapbox',
-      //type: 'scattergeo',
-      //locationmode: 'USA-states',
       mode: 'markers',
       lat: data.map(d => d.latitude),
       lon: data.map(d => d.longitude),
-      text: data.map(d => `<b>Latitude:</b> ${d.latitude}<br><b>Longitude:</b> ${d.longitude}`),
+      text: data.map(d => `<b>State:</b> ${d.state_name}<br><b>Date:</b> ${d.acq_date}<br><b>Brightness:</b> ${d.bright_t31} Kelvin`),
       hoverinfo: 'text',
       customdata: data.map(d => getDetail(d)),
       marker: {
@@ -364,14 +389,7 @@ function create2DMap(data, currentZoom, currentCenter, style) {
 
   let layout = {
     autosize: true,
-    //geo: {
-    //  scope: 'usa',
-    //  projection: {
-    //    type: 'albers usa'
-    //  },
-    //},
     mapbox: {
-      //style: 'carto-positron',
       style: style || 'carto-positron',
       center: currentCenter || { lat: 37.0902, lon: -95.7129 },
       zoom: currentZoom || 3
@@ -383,8 +401,6 @@ function create2DMap(data, currentZoom, currentCenter, style) {
       t: 0,
       pad: 0
     },
-    //height: window.innerHeight,
-    //width: window.innerWidth,
     paper_bgcolor: '#191A1A',
     plot_bgcolor: '#191A1A',
   };
@@ -400,10 +416,13 @@ function create2DMap(data, currentZoom, currentCenter, style) {
     detailsBox.style.display = 'block';
     detailsBox.innerHTML = infotext;
   });
+
+  document.getElementById('showNumData').style.display = 'none';
 }
 
 function create3DMap(data, currentCenter) {
   document.getElementById('toggle3D').innerHTML = "<span class=\"material-icons\">map</span> Toggle 2D View";
+
   document.getElementById('map2D').style.display = 'none';
   const container = document.getElementById('map3D');
   container.style.display = 'block';
@@ -413,7 +432,7 @@ function create3DMap(data, currentCenter) {
     updateNumDataPoints();
   });
 
-  let showNumData = 20000;
+  let showNumData = 1000;
 
   function updateNumDataPoints() {
     const showNumDataInput = document.getElementById('showNumDataInput');
@@ -467,12 +486,35 @@ function create3DMap(data, currentCenter) {
     <b>Time:</b> ${pointData.time}<br>
     <b>DayNight:</b> ${pointData.dayNight}<br>
     <b>Type:</b> ${pointData.type}<br>
-    <b>Brightness(Temperature):</b> ${pointData.temp}
-    <b>Satellite:</b> ${pointData.satellite}<br>`;
+    <b>Satellite:</b> ${pointData.satellite}<br>
+    <b>Brightness(Temperature):</b> ${pointData.temp} Kelvin`;
 
     // Display the data in the detailBox
     detailBox.innerHTML = dataDetails;
   }
+
+  function handlePointHover(point, prevPoint) {
+    const hoverInfo = document.getElementById('hoverInfo');
+
+    if (point) {
+      // Format and display the data in hoverInfo
+      hoverInfo.innerHTML = `State: ${point.state}<br>Date: ${point.date}<br>Brightness: ${point.temp} Kelvin`;
+      // Use the brightnessToColor function to get the color based on point data
+      const pointColor = brightnessToColor(point.brightness);
+
+      // Set the background and border color of the tooltip
+      hoverInfo.style.background = pointColor;
+      hoverInfo.style.borderColor = pointColor;
+
+      // Position the tooltip
+      hoverInfo.style.left = (mousePosition.x + 20) + 'px';
+      hoverInfo.style.top = (mousePosition.y + 10) + 'px';
+      hoverInfo.style.display = 'block';
+    } else if (prevPoint) {
+      hoverInfo.style.display = 'none';
+    }
+  }
+
 
   // Initialize the globe
   const world = Globe();
@@ -484,23 +526,23 @@ function create3DMap(data, currentCenter) {
       .pointAltitude('brightness')
       .pointColor(d => brightnessToColor(d.brightness))
       .onPointClick(handlePointClick)
-  // .hexBinPointWeight('pop')
-  // .hexAltitude(d => d.sumWeight * 6e-8)
-  // .hexBinResolution(4)
-  // .hexTopColor(d => weightColor(d.sumWeight))
-  // .hexSideColor(d => weightColor(d.sumWeight))
-  // .hexBinMerge(true)
-  // .enablePointerInteraction(false) // performance improvement
-  // .pointColor('red');
-  // .pointsData(data);
-  /*issues/todo
-    need to show states
-    change style of bg and globe?
-    display data on hover
-    only allow rotation viewing of US, not other countries
-  */
+      .pointsMerge(false)
+      .onPointHover(handlePointHover)
 
   world.pointOfView(currentCenter || { lat: 39.8, lng: -120.6, altitude: 1.5 });
+
+  // Define the maximum and minimum longitudes to restrict rotation
+  const minLng = -169;
+  const maxLng = -50;
+  // Add an event listener for zoom/rotation changes
+  world.onZoom((pointOfView) => {
+    if (pointOfView.lng < minLng) { // beyond Hawaii
+      world.pointOfView({ lng: minLng });
+    }
+    else if (pointOfView.lng > maxLng) { // beyond east coast
+      world.pointOfView({ lng: maxLng });
+    }
+  });
 
   function handleResize() {
     const width = container.clientWidth;
@@ -513,6 +555,8 @@ function create3DMap(data, currentCenter) {
 
   // Initial call to set up the initial size
   handleResize();
+
+  document.getElementById('showNumData').style.display = 'block';
 }
 
 function normalize(x) {
@@ -541,13 +585,13 @@ function getDetail(d) {
 
   return `
   <b>State:</b> ${d.state_name}<br>
-  <b>Latitude:</b> ${d.latitude}<br>
-  <b>Longitude:</b> ${d.longitude}<br>
   <b>Date:</b> ${d.acq_date}<br>
   <b>Time:</b> ${formatTime(d.acq_time)}<br>
-  <b>DayNight:</b> ${dayNightDescription}<br>
-  <b>Type:</b> ${typeDescription}<br>
   <b>Brightness(Temperature):</b> ${d.bright_t31} Kelvin<br>
+  <b>Type:</b> ${typeDescription}<br>
+  <b>Day/Night:</b> ${dayNightDescription}<br>
+  <b>Latitude:</b> ${d.latitude}<br>
+  <b>Longitude:</b> ${d.longitude}<br>
   <b>Satellite:</b> ${d.satellite}<br>
             `;
 }
