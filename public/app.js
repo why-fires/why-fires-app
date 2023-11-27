@@ -23,8 +23,8 @@ const typeMapping = {
 };
 
 const dayNightMapping = {
-  'D' : 'Daytime fire',
-  'N' : 'Nighttime fire'
+  'D' : 'Daytime Fire',
+  'N' : 'Nighttime Fire'
 }
 
 const dayNightStyle = {
@@ -494,8 +494,7 @@ function create3DMap(data, currentCenter) {
 
     if (point) {
       // Format and display the data in hoverInfo
-      hoverInfo.innerHTML = `Latitude: ${point.lat}, Longitude: ${point.lng}`;
-
+      hoverInfo.innerHTML = `State: ${point.state}<br>Date: ${point.date}<br>Brightness: ${point.temp} Kelvin`;
       // Use the brightnessToColor function to get the color based on point data
       const pointColor = brightnessToColor(point.brightness);
 
@@ -585,7 +584,7 @@ function getDetail(d) {
   <b>Time:</b> ${formatTime(d.acq_time)}<br>
   <b>Brightness(Temperature):</b> ${d.bright_t31} Kelvin<br>
   <b>Type:</b> ${typeDescription}<br>
-  <b>DayNight:</b> ${dayNightDescription}<br>
+  <b>Day/Night:</b> ${dayNightDescription}<br>
   <b>Latitude:</b> ${d.latitude}<br>
   <b>Longitude:</b> ${d.longitude}<br>
   <b>Satellite:</b> ${d.satellite}<br>

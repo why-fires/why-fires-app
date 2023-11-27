@@ -25,6 +25,13 @@
     <div class="side-panel">
       <div id="infoContainer">
         <div id="filter">
+
+          <img src="./images/WHY_FIRES.png"
+               width="215"
+               height="39"
+
+               alt="WHY FIRES"><br>
+
           <select id="stateFilter">
             <option value="">Select State</option>
             <option value="Alabama">Alabama</option>
@@ -87,25 +94,16 @@
 
           <select id="typeFilter">
             <option value="">Select Type</option>
-            <option value="0">Presumed Vegetation Fire</option>
-            <option value="1">Active Volcano</option>
-            <option value="2">Other Static Land Source</option>
-            <option value="3">Offshore</option>
+            <option value="0">&#128293 Presumed Vegetation Fire</option>
+            <option value="2">&#128270 Other Static Land Source</option>
+            <option value="3">&#127754 Offshore</option>
+            <option value="1">&#127755 Active Volcano</option>
           </select>
 
           <input type="date" id="dateFilter">
         </div>
 
-        <div class="button r" id="toggle3D">
-          <input type="checkbox" class="checkbox"/>
-          <div class="knobs"></div>
-          <div class="layer"></div>
-        </div>
 
-        <div id="showNumData">
-          <input type="number" id="showNumDataInput" placeholder="Enter number of data points">
-          <button id="showNumDataButton">Apply</button>
-        </div>
 
         <div id="slider">
           <input type="range" id="monthSlider" min="0" max="12" value="0">
@@ -125,6 +123,21 @@
         <span>Color Range</span>
 
         <div id="hoverInfo"></div>
+
+        <br></br>
+
+        <div class="button r" id="toggle3D">
+          <div title="Toggle 3D View"></div>
+          <input type="checkbox" class="checkbox"/>
+          <div class="knobs"></div>
+          <div class="layer"></div>
+        </div>
+
+        <div id="showNumData">
+          <input type="number" id="showNumDataInput" placeholder="Enter number of data points">
+          <button id="showNumDataButton">Apply</button>
+        </div>
+
       </div>
     </div>
 
