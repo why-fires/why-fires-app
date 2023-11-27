@@ -342,6 +342,8 @@ function createGeoGraph(data, currentZoom, currentCenter, style) {
 }
 
 function create2DMap(data, currentZoom, currentCenter, style) {
+  document.getElementById('toggle3D').innerHTML = "<span class=\"material-icons\">public</span> Toggle 3D View";
+
   document.getElementById('map3D').style.display = 'none';
   const container = document.getElementById('map2D');
   container.style.display = 'block';
@@ -361,7 +363,7 @@ function create2DMap(data, currentZoom, currentCenter, style) {
     const gradientStart = brightnessToColor(minValue);
     const gradientEnd = brightnessToColor(maxValue);
     const colorRangeBar = document.getElementById('colorRangeBar');
-    colorRangeBar.style.background = `linear-gradient(to right, ${gradientStart}, ${gradientEnd})`;
+    colorRangeBar.style.background = `linear-gradient(to top, ${gradientStart}, ${gradientEnd})`;
   }
 
 // Call this function with the min and max values of your data
@@ -419,6 +421,8 @@ function create2DMap(data, currentZoom, currentCenter, style) {
 }
 
 function create3DMap(data, currentCenter) {
+  document.getElementById('toggle3D').innerHTML = "<span class=\"material-icons\">map</span> Toggle 2D View";
+
   document.getElementById('map2D').style.display = 'none';
   const container = document.getElementById('map3D');
   container.style.display = 'block';
@@ -604,6 +608,10 @@ function getPlotlyLayout(divId) {
   return currentLayout;
 }
 
-document.querySelector(".side-panel-toggle").addEventListener("click", () => {
-  document.querySelector(".wrapper").classList.toggle("side-panel-open");
-});
+const toggleBtn = document.querySelector('.sidebar-toggle');
+const sidebar = document.querySelector('.sidebar');
+
+toggleBtn.addEventListener('click', () => {
+  toggleBtn.classList.toggle('is-closed');
+  sidebar.classList.toggle('is-closed');
+})
