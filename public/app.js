@@ -374,7 +374,7 @@ function create2DMap(data, currentZoom, currentCenter, style) {
       mode: 'markers',
       lat: data.map(d => d.latitude),
       lon: data.map(d => d.longitude),
-      text: data.map(d => `<b>Latitude:</b> ${d.latitude}<br><b>Longitude:</b> ${d.longitude}`),
+      text: data.map(d => `<b>State:</b> ${d.state_name}<br><b>Date:</b> ${d.acq_date}<br><b>Brightness:</b> ${d.bright_t31} Kelvin`),
       hoverinfo: 'text',
       customdata: data.map(d => getDetail(d)),
       marker: {
@@ -581,15 +581,14 @@ function getDetail(d) {
 
   return `
   <b>State:</b> ${d.state_name}<br>
-  <b>Latitude:</b> ${d.latitude}<br>
-  <b>Longitude:</b> ${d.longitude}<br>
   <b>Date:</b> ${d.acq_date}<br>
   <b>Time:</b> ${formatTime(d.acq_time)}<br>
-  <b>DayNight:</b> ${dayNightDescription}<br>
-  <b>Type:</b> ${typeDescription}<br>
-  <b>Satellite:</b> ${d.satellite}<br>
   <b>Brightness(Temperature):</b> ${d.bright_t31} Kelvin<br>
-
+  <b>Type:</b> ${typeDescription}<br>
+  <b>DayNight:</b> ${dayNightDescription}<br>
+  <b>Latitude:</b> ${d.latitude}<br>
+  <b>Longitude:</b> ${d.longitude}<br>
+  <b>Satellite:</b> ${d.satellite}<br>
             `;
 }
 
