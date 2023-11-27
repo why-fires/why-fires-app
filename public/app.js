@@ -524,20 +524,21 @@ function create3DMap(data, currentCenter) {
       .onPointClick(handlePointClick)
       .pointsMerge(false)
       .onPointHover(handlePointHover)
-  // .hexBinPointWeight('pop')
-  // .hexAltitude(d => d.sumWeight * 6e-8)
-  // .hexBinResolution(4)
-  // .hexTopColor(d => weightColor(d.sumWeight))
-  // .hexSideColor(d => weightColor(d.sumWeight))
-  // .hexBinMerge(true)
-  // .enablePointerInteraction(false) // performance improvement
-  // .pointColor('red');
-  // .pointsData(data);
-  /*issues/todo
-    only allow rotation viewing of US, not other countries
-  */
 
   world.pointOfView(currentCenter || { lat: 39.8, lng: -120.6, altitude: 1.5 });
+
+  // Define the maximum and minimum longitudes to restrict rotation
+  const minLng = -169;
+  const maxLng = -50;
+  // Add an event listener for zoom/rotation changes
+  world.onZoom((pointOfView) => {
+    if (pointOfView.lng < minLng) { // beyond Hawaii
+      world.pointOfView({ lng: minLng });
+    }
+    else if (pointOfView.lng > maxLng) { // beyond east coast
+      world.pointOfView({ lng: maxLng });
+    }
+  });
 
   function handleResize() {
     const width = container.clientWidth;
