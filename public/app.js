@@ -311,24 +311,24 @@ document.getElementById('dateFilter').addEventListener('change', () => loadYearD
 document.getElementById('monthSlider').addEventListener('change', () => loadYearData(document.getElementById('yearSlider').value));
 document.getElementById('yearSlider').addEventListener('change', () => loadYearData(document.getElementById('yearSlider').value));
 
-document.addEventListener('DOMContentLoaded', () => {
-  // Reference to the checkbox inside the toggle3D div
-  const toggleCheckbox = document.querySelector('#toggle3D .checkbox');
+// document.addEventListener('DOMContentLoaded', () => {
+//   // Reference to the checkbox inside the toggle3D div
+//   const toggleCheckbox = document.querySelector('#toggle3D .checkbox');
 
-  // Event listener for the checkbox change
-  toggleCheckbox.addEventListener('change', function() {
-    if (this.checked) {
-      // Checkbox is checked - switch to 3D view
-      document.getElementById('map2D').style.display = 'none';
-      document.getElementById('map3D').style.display = 'block';
-    } else {
-      // Checkbox is not checked - switch to 2D view
-      document.getElementById('map2D').style.display = 'block';
-      document.getElementById('map3D').style.display = 'none';
-    }
-  });
+//   // Event listener for the checkbox change
+//   toggleCheckbox.addEventListener('change', function() {
+//     if (this.checked) {
+//       // Checkbox is checked - switch to 3D view
+//       document.getElementById('map2D').style.display = 'none';
+//       document.getElementById('map3D').style.display = 'block';
+//     } else {
+//       // Checkbox is not checked - switch to 2D view
+//       document.getElementById('map2D').style.display = 'block';
+//       document.getElementById('map3D').style.display = 'none';
+//     }
+//   });
 
-});
+// });
 
 
 function createGeoGraph(data, currentZoom, currentCenter, style) {
