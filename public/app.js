@@ -218,12 +218,10 @@ function filterData(data) {
   const stateFilter = document.getElementById('stateFilter').value;
 
   // Day night filter
-  // const dayNightFilter = document.getElementById('dayNightFilter').value;
   const typeDay = document.getElementById('typeDay').checked;
   const typeNight = document.getElementById('typeNight').checked;
 
   // Type of fire filter
-  // const typeFilter = document.getElementById('typeFilter').value;
   const typePVF = document.getElementById('typePVF').checked;
   const typeOSLS = document.getElementById('typeOSLS').checked;
   const typeO = document.getElementById('typeO').checked;
@@ -239,9 +237,6 @@ function filterData(data) {
     filteredData = filteredData.filter(d => d.state_name === stateFilter);
     currentZoom = 5;
   }
-  // if (dayNightFilter) {
-  //   filteredData = filteredData.filter(d => d.daynight === dayNightFilter);
-  // }
   if (typeDay || typeNight) {
     filteredData = filteredData.filter(d => {
       if (typeDay && d.daynight === "D") {
@@ -253,9 +248,6 @@ function filterData(data) {
       return false;
     });
   }
-  // if (typeFilter) {
-  //   filteredData = filteredData.filter(d => d.type === typeFilter);
-  // }
   if (typePVF || typeOSLS || typeO || typeAV) {
     filteredData = filteredData.filter(d => {
       if (typePVF && d.type === "0") {
@@ -299,7 +291,7 @@ function loadYearData(year) {
     updateDataCount(filteredData.length);
     let states = document.getElementById('stateFilter').value;
     let latLon = statesLonLat[states];
-    let dayNight = 'N'; //document.getElementById('dayNightFilter').value; // remove day/night styling?
+    let dayNight = 'N';
     let style = dayNightStyle[dayNight];
     currentZoom = statesZoom[states];
     createGeoGraph(filteredData, currentZoom, latLon, style);
@@ -344,10 +336,8 @@ loadYearData('2001');
 
 
 document.getElementById('stateFilter').addEventListener('change', () => loadYearData(document.getElementById('yearSlider').value));
-// document.getElementById('dayNightFilter').addEventListener('change', () => loadYearData(document.getElementById('yearSlider').value));
 document.getElementById('typeDay').addEventListener('change', () => loadYearData(document.getElementById('yearSlider').value));
 document.getElementById('typeNight').addEventListener('change', () => loadYearData(document.getElementById('yearSlider').value));
-// document.getElementById('typeFilter').addEventListener('change', () => loadYearData(document.getElementById('yearSlider').value));
 document.getElementById('typePVF').addEventListener('change', () => loadYearData(document.getElementById('yearSlider').value));
 document.getElementById('typeOSLS').addEventListener('change', () => loadYearData(document.getElementById('yearSlider').value));
 document.getElementById('typeO').addEventListener('change', () => loadYearData(document.getElementById('yearSlider').value));
@@ -605,8 +595,6 @@ function create3DMap(data, currentCenter) {
 }
 
 function normalize(x) {
-  let xminimum = x.reduce((min, current) => (current < min) ? current : min)
-  let xmaximum = x.reduce((max, current) => (current > max) ? current : max)
   let xnormalized = x.map((item) => (item * 0.0001));
   return xnormalized;
 }
