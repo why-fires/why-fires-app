@@ -564,7 +564,7 @@ function create3DMap(data, currentCenter) {
       .pointsMerge(false)
       .onPointHover(handlePointHover)
 
-  world.pointOfView(currentCenter || { lat: 39.8, lng: -120.6, altitude: 1.5 });
+  world.pointOfView(currentCenter || { lat: 39.8, lng: -120.6, altitude: 1.5 }, 500);
 
   // Define the maximum and minimum longitudes to restrict rotation
   const minLng = -169;
@@ -659,3 +659,16 @@ function expandContract() {
   content.classList.toggle('expanded');
   content.classList.toggle('collapsed');
 }
+<<<<<<< Updated upstream
+=======
+
+function expandContract2() {
+  const container = document.getElementById("expandContainer2");
+  container.classList.toggle('expanded');
+  container.classList.toggle('collapsed');
+
+  const content = document.getElementById("expandContract2");
+  content.classList.toggle('expanded');
+  content.classList.toggle('collapsed');
+}
+>>>>>>> Stashed changes
