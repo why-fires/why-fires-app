@@ -659,3 +659,13 @@ function expandContract() {
   content.classList.toggle('expanded');
   content.classList.toggle('collapsed');
 }
+
+function expandContract2() {
+  const container = document.getElementById("expandContainer2");
+  container.classList.toggle('expanded');
+  container.classList.toggle('collapsed');
+
+  const content = document.getElementById("expandContract2");
+  content.classList.toggle('expanded');
+  content.classList.toggle('collapsed');
+}
