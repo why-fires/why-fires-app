@@ -532,7 +532,7 @@ function create3DMap(data, currentCenter) {
     <div title="Whether the fire took place during the day or night"><b>DayNight:</b> ${pointData.dayNight}</div>
     <div title="Approximate latitude of the fire"><b>Latitude:</b> ${pointData.lat}</div>
     <div title="Approximate longitude of the fire"><b>Longitude:</b> ${pointData.lng}</div>
-    <div title="Name of the Satellite that measured the data"><<b>Satellite:</b> ${pointData.satellite}</div>`;
+    <div title="Name of the Satellite that measured the data"><b>Satellite:</b> ${pointData.satellite}</div>`;
 
     // Display the data in the detailBox
     detailBox.innerHTML = dataDetails;
