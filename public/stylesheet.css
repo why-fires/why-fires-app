@@ -180,6 +180,8 @@ select {
 
 .checkbox-wrapper-29 .checkbox__label {
   width: var(--size);
+  position: relative;
+  top: 3px;
 }
 
 .checkbox-wrapper-29 .checkbox__label:before {
