@@ -199,10 +199,14 @@
           <button id="showNumDataButton">Apply</button>
         </div>
 
-        <button id="toggle3D">Toggle 3D View</button>
+        <div class="sidebar-footer">
+          <div id="dataCount">
+            <div title="The total amount of data points collected in the selection"><b>Total Data Points:</b> <span id="totalDataPoints">0</span></div>
+          </div>
+          <button id="toggle3D">Toggle 3D View</button>
+        </div>
 
       </div>
-
 
 
       <button class="sidebar-toggle">
@@ -215,11 +219,11 @@
   </div>
 
   <div id="detailContainer">
-    <div id="dataCount">
-      <div title="The total amount of data points collected in the selection"><b>Total Data Points:</b> <span id="totalDataPoints">0</span></div>
+    <div id="detailBox">
+      <p>
+        Select a point to learn more about the wildfire.
+      </p>
     </div>
-    <hr />
-    <div id="detailBox">Click on a data point to see the details here.</div>
   </div>
 
 </main>

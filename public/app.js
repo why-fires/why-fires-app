@@ -512,17 +512,31 @@ function create3DMap(data, currentCenter) {
 
   function handlePointClick(pointData) {
     const detailBox = document.getElementById('detailBox');
+    const date = new Date(pointData.date).toDateString();
     // Format the data to be displayed, e.g., as a string or HTML
     const dataDetails = `
-    <div title="Where the fire took place"><b>State:</b> ${pointData.state}</div>
-    <div title="When the fire took place"><b>Date:</b> ${pointData.date}</div>
-    <div title="What time the fire took place"><b>Time:</b> ${pointData.time}</div>
-    <div title="Temperature of the fire measured in Kelvin"><b>Brightness(Temperature):</b> ${pointData.temp} Kelvin</div>
-    <div title="What the cause of the fire was"><b>Type:</b> ${pointData.type}</div>
-    <div title="Whether the fire took place during the day or night"><b>DayNight:</b> ${pointData.dayNight}</div>
-    <div title="Approximate latitude of the fire"><b>Latitude:</b> ${pointData.lat}</div>
-    <div title="Approximate longitude of the fire"><b>Longitude:</b> ${pointData.lng}</div>
-    <div title="Name of the Satellite that measured the data"><b>Satellite:</b> ${pointData.satellite}</div>`;
+      <div>
+        <b style="font-size: 24px;">${pointData.state}</b> 
+      </div>
+      <br />
+      <div style="font-size: 18px;">
+        <b>Lat:</b> ${pointData.lat}
+        <b>Long:</b> ${pointData.lng}
+      </div>
+      <br />
+      <div style="font-size: 18px;">
+        <b>Date:</b> ${date} <br />
+        <b>Time:</b> ${pointData.time} ${pointData.dayNight}
+      </div>
+      <br />
+      <div style="font-size: 18px;">
+        <b>Brightness:</b> ${pointData.temp} K
+        <div id="colorRangeBarPoint"></div>
+        <b>Type:</b> ${pointData.type}
+      </div>
+      <br />
+      <i style="color: darkgray;">Taken by Satellite ${pointData.satellite}</i>
+    `;
 
     // Display the data in the detailBox
     detailBox.innerHTML = dataDetails;
@@ -615,20 +629,43 @@ function updateDataCount(count) {
 function getDetail(d) {
   const typeDescription = typeMapping[d.type] || 'Unknown';
   const dayNightDescription = dayNightMapping[d.daynight] || 'Unknown';
+  const date = new Date(d.acq_date).toDateString();
 
   return `
-  <div title="Where the fire took place"><b>State:</b> ${d.state_name}</div>
-  <div title="When the fire took place"><b>Date:</b> ${d.acq_date}</div>
-  <div title="What time the fire took place"><b>Time:</b> ${formatTime(d.acq_time)}</div>
-  <div title="Temperature of the fire measured in Kelvin"><b>Brightness(Temperature):</b> ${d.bright_t31} Kelvin</div>
-  <div title="What the cause of the fire was"><b>Type:</b> ${typeDescription}</div>
-  <div title="Whether the fire took place during the day or night"><b>Day/Night:</b> ${dayNightDescription}</div>
-  <div title="Approximate latitude of the fire"><b>Latitude:</b> ${d.latitude}</div>
-  <div title="Approximate longitude of the fire"><b>Longitude:</b> ${d.longitude}</div>
-  <div title="Name of the Satellite that measured the data"><b>Satellite:</b> ${d.satellite}</div>
-            `;
+      <div>
+        <b style="font-size: 24px;">${d.state_name}</b> 
+      </div>
+      <br />
+      <div style="font-size: 18px;">
+        <b>Lat:</b> ${d.latitude}
+        <b>Long:</b> ${d.longitude}
+      </div>
+      <br />
+      <div style="font-size: 18px;">
+        <b>Date:</b> ${date} <br />
+        <b>Time:</b> ${formatTime(d.acq_time)} ${dayNightDescription}
+      </div>
+      <br />
+      <div style="font-size: 18px;">
+        <b>Brightness:</b> ${d.bright_t31} K
+        <div id="colorRangeBarPoint"></div>
+        <b>Type:</b> ${typeDescription}
+      </div>
+      <br />
+      <i style="color: darkgray;">Taken by Satellite ${d.satellite}</i> 
+  `;
 }
-
+/*
+<div title="Where the fire took place"><b>State:</b> ${d.state_name}</div>
+<div title="When the fire took place"><b>Date:</b> ${d.acq_date}</div>
+<div title="What time the fire took place"><b>Time:</b> ${formatTime(d.acq_time)}</div>
+<div title="Temperature of the fire measured in Kelvin"><b>Brightness(Temperature):</b> ${d.bright_t31} Kelvin</div>
+<div title="What the cause of the fire was"><b>Type:</b> ${typeDescription}</div>
+<div title="Whether the fire took place during the day or night"><b>Day/Night:</b> ${dayNightDescription}</div>
+<div title="Approximate latitude of the fire"><b>Latitude:</b> ${d.latitude}</div>
+<div title="Approximate longitude of the fire"><b>Longitude:</b> ${d.longitude}</div>
+<div title="Name of the Satellite that measured the data"><b>Satellite:</b> ${d.satellite}</div>
+*/
 function getPlotlyLayout(divId) {
   let currentLayout = {};
   const gd = document.getElementById(divId);
