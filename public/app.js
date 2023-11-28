@@ -514,15 +514,15 @@ function create3DMap(data, currentCenter) {
     const detailBox = document.getElementById('detailBox');
     // Format the data to be displayed, e.g., as a string or HTML
     const dataDetails = `
-    <b>State:</b> ${pointData.state}<br> 
-    <b>Latitude:</b> ${pointData.lat}<br> 
-    <b>Longitude:</b> ${pointData.lng}<br> 
-    <b>Date:</b> ${pointData.date}<br>
-    <b>Time:</b> ${pointData.time}<br>
-    <b>DayNight:</b> ${pointData.dayNight}<br>
-    <b>Type:</b> ${pointData.type}<br>
-    <b>Satellite:</b> ${pointData.satellite}<br>
-    <b>Brightness(Temperature):</b> ${pointData.temp} Kelvin`;
+    <div title="Where the fire took place"><b>State:</b> ${pointData.state}</div>
+    <div title="When the fire took place"><b>Date:</b> ${pointData.date}</div>
+    <div title="What time the fire took place"><b>Time:</b> ${pointData.time}</div>
+    <div title="Temperature of the fire measured in Kelvin"><b>Brightness(Temperature):</b> ${pointData.temp} Kelvin</div>
+    <div title="What the cause of the fire was"><b>Type:</b> ${pointData.type}</div>
+    <div title="Whether the fire took place during the day or night"><b>DayNight:</b> ${pointData.dayNight}</div>
+    <div title="Approximate latitude of the fire"><b>Latitude:</b> ${pointData.lat}</div>
+    <div title="Approximate longitude of the fire"><b>Longitude:</b> ${pointData.lng}</div>
+    <div title="Name of the Satellite that measured the data"><b>Satellite:</b> ${pointData.satellite}</div>`;
 
     // Display the data in the detailBox
     detailBox.innerHTML = dataDetails;
@@ -617,15 +617,15 @@ function getDetail(d) {
   const dayNightDescription = dayNightMapping[d.daynight] || 'Unknown';
 
   return `
-  <b>State:</b> ${d.state_name}<br>
-  <b>Date:</b> ${d.acq_date}<br>
-  <b>Time:</b> ${formatTime(d.acq_time)}<br>
-  <b>Brightness(Temperature):</b> ${d.bright_t31} Kelvin<br>
-  <b>Type:</b> ${typeDescription}<br>
-  <b>Day/Night:</b> ${dayNightDescription}<br>
-  <b>Latitude:</b> ${d.latitude}<br>
-  <b>Longitude:</b> ${d.longitude}<br>
-  <b>Satellite:</b> ${d.satellite}<br>
+  <div title="Where the fire took place"><b>State:</b> ${d.state_name}</div>
+  <div title="When the fire took place"><b>Date:</b> ${d.acq_date}</div>
+  <div title="What time the fire took place"><b>Time:</b> ${formatTime(d.acq_time)}</div>
+  <div title="Temperature of the fire measured in Kelvin"><b>Brightness(Temperature):</b> ${d.bright_t31} Kelvin</div>
+  <div title="What the cause of the fire was"><b>Type:</b> ${typeDescription}</div>
+  <div title="Whether the fire took place during the day or night"><b>Day/Night:</b> ${dayNightDescription}</div>
+  <div title="Approximate latitude of the fire"><b>Latitude:</b> ${d.latitude}</div>
+  <div title="Approximate longitude of the fire"><b>Longitude:</b> ${d.longitude}</div>
+  <div title="Name of the Satellite that measured the data"><b>Satellite:</b> ${d.satellite}</div>
             `;
 }
 
