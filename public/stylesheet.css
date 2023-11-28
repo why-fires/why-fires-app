@@ -29,6 +29,13 @@ body {
   background-color: var(--bgColor);
 }
 
+#detailBox {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
 .sidebar {
     display: flex;
     justify-content: space-between;
@@ -41,6 +48,11 @@ body {
     color: white;
     background-color: rgb(60, 63, 65, 0.9); /* rgb equivalent of bg color #3c3f41 with .9 opacity*/
     transition: .5s;
+}
+
+.sidebar-footer {
+  position: absolute;
+  bottom: 3em;
 }
 
 .sidebar.is-closed {
@@ -359,8 +371,6 @@ input[type="date"] {
     text-align: center;
     transition: .25s all ease;
     vertical-align: middle;
-    position: absolute;
-    bottom: 3em;
 }
 
 #toggle3D:hover {
@@ -378,6 +388,15 @@ input[type="date"] {
     border-radius: 5px;
     background: linear-gradient(to top, hsl(240, 100%, 50%), hsl(0, 100%, 50%));
     margin: 10px;
+}
+
+#colorRangeBarPoint {
+  width: 90%;
+  height: 20px;
+  border: 1px solid #000;
+  border-radius: 5px;
+  background: linear-gradient(to right, hsl(240, 100%, 50%), hsl(0, 100%, 50%));
+  margin: 10px;
 }
 
 #hoverInfo {
