@@ -752,3 +752,11 @@ function expandContract2() {
   content.classList.toggle('expanded');
   content.classList.toggle('collapsed');
 }
+
+var input = document.getElementById("showNumDataInput");
+input.addEventListener("keypress", function(event) {
+  if (event.key === "Enter") {
+    event.preventDefault();
+    document.getElementById("showNumDataButton").click();
+  }
+});
