@@ -434,7 +434,7 @@ function create2DMap(data, currentZoom, currentCenter, style) {
       customdata: data.map(d => getDetail(d)),
       marker: {
         color: colors,
-        size: 12,
+        size: 12, 
         opacity: 0.8
       }
     }
@@ -456,15 +456,130 @@ function create2DMap(data, currentZoom, currentCenter, style) {
     },
     paper_bgcolor: '#191A1A',
     plot_bgcolor: '#191A1A',
+    legend: {
+      orientation: 'h', // Horizontal layout of legend items
+      x: 0.5, // Center the legend horizontally
+      xanchor: 'center', // Anchor the legend at its center
+      y: -0.1, // Position the legend below the bottom of the plot
+      yanchor: 'top' // Anchor the legend at its top
+    },
   };
 
   let config = {responsive: true, displayModeBar: false, mapboxAccessToken: 'pk.eyJ1IjoiYWxleGFuZGVyaHVuZyIsImEiOiJjbG8xY2VnMXcwc2x0MmxvZHBmNTVpYjM3In0.nghzNs8d4lg_MLvHETaB_w'}
 
   Plotly.newPlot('map2D', trace, layout, config);
 
-  map2D.on('plotly_click', function(data){
-    var infotext = data.points[0].data.customdata[data.points[0].pointIndex];
+  let selectedPointIndex = null; // To track the selected point
+  let allSpecialTraces = []; // To keep track of all special traces with their names
 
+  // Function to update the colors of the original data points
+  function updateOriginalDataPointColors() {
+    let newColors;
+    if (allSpecialTraces.length > 0) {
+      // Set all original data points to gray if there's at least one special trace
+      newColors = data.map(() => 'gray');
+    } else {
+      // Revert back to original colors if there are no special traces
+      newColors = data.map(d => brightnessToColor(d.bright_t31));
+    }
+
+    var update = {
+      'marker.color': newColors
+    };
+    Plotly.restyle('map2D', update);
+  }
+
+  // Function to add a special trace for a clicked data point
+  function addSpecialTrace(pointData, traceName) {
+    let specialTrace = {
+      name: traceName,
+      type: 'scattermapbox',
+      mode: 'markers',
+      lat: [pointData.lat],
+      lon: [pointData.lon],
+      text: pointData.text, // Set the hover text
+      hoverinfo: 'text', // Display text on hover
+      marker: {
+        color: brightnessToColor(pointData.data.bright_t31),
+        size: 15,
+        opacity: 1
+      }
+    };
+
+    Plotly.addTraces('map2D', specialTrace);
+  }
+
+// Function to remove a special trace based on the clicked point index
+  function removeSpecialTrace(clickedPointIndex) {
+
+    //console.log("in remove function: " + clickedPointIndex);
+    let traceToRemove = allSpecialTraces.find(trace => trace.name === `Data_${clickedPointIndex}`);
+    //console.log("trace To remove" + traceToRemove)
+    if (traceToRemove) {
+      let plotElement = document.getElementById('map2D');
+      let plotData = plotElement.data;
+      let traceIndex = plotData.findIndex(trace => trace.name === traceToRemove.name);
+
+      if (traceIndex !== -1) {
+        Plotly.deleteTraces('map2D', traceIndex);
+        allSpecialTraces = allSpecialTraces.filter(trace => trace.name !== `Data_${clickedPointIndex}`);
+        //console.log("allSpecialTraces" + allSpecialTraces)
+      }
+    }
+
+    //console.log("After removing a trace:", allSpecialTraces);
+  }
+
+  function updatePointColors() {
+    let newColors = data.map((d, index) => {
+      if (selectedPointIndex !== null && index !== selectedPointIndex) {
+        return 'gray'; // Color for non-selected points
+      } else {
+        return brightnessToColor(d.bright_t31); // Original color
+      }
+    });
+
+    // Update the trace with new colors
+    var update = {
+      'marker.color': newColors
+    };
+    Plotly.restyle('map2D', update);
+  }
+
+// Event handler for clicks on the map
+  map2D.on('plotly_click', function(data){
+
+    var clickedTraceName = data.points[0].data.name;
+
+    // Ignore clicks on special traces
+    if (clickedTraceName && clickedTraceName.startsWith('Data_')) {
+      // Extracting index from the trace name
+      let ignoredIndex = clickedTraceName.split('_')[1];
+      //console.log("Clicked on a special trace, ignoring index:", ignoredIndex);
+
+      return removeSpecialTrace(ignoredIndex);
+    }
+
+    // Handling clicks on original traces
+    var clickedPointIndex = data.points[0].pointIndex;
+    //console.log("Clicked on original trace, index:", clickedPointIndex);
+
+    if (selectedPointIndex === clickedPointIndex) {
+      //console.log("Second click on the same original trace");
+      removeSpecialTrace(clickedPointIndex);
+      selectedPointIndex = null;
+    } else {
+      //console.log("First click on an original trace");
+      if (!allSpecialTraces.some(trace => trace.index === clickedPointIndex)) {
+        let traceName = `Data_${clickedPointIndex}`;
+        addSpecialTrace(data.points[0], traceName);
+        allSpecialTraces.push({ index: clickedPointIndex, name: traceName });
+      }
+      selectedPointIndex = clickedPointIndex;
+    }
+
+    // Display details of the clicked point
+    var infotext = data.points[0].data.customdata[clickedPointIndex];
     var detailsBox = document.getElementById('detailBox');
     detailsBox.style.display = 'block';
     detailsBox.innerHTML = infotext;
