@@ -399,6 +399,24 @@ function create2DMap(data, currentZoom, currentCenter, style) {
     const gradientEnd = brightnessToColor(maxValue);
     const colorRangeBar = document.getElementById('colorRangeBar');
     colorRangeBar.style.background = `linear-gradient(to top, ${gradientStart}, ${gradientEnd})`;
+
+    const colorRangeRange = document.getElementById('colorRangeRange');
+    const colorDetails = `
+    <div>
+      ${maxValue}
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
+      ${minValue}
+    </div>
+      `;
+    colorRangeRange.innerHTML = colorDetails;
   }
 
 // Call this function with the min and max values of your data
@@ -486,6 +504,7 @@ function create3DMap(data, currentCenter) {
   let minBrightness = data.reduce((min, p) => p.bright_t31 < min ? p.bright_t31 : min, data[0].bright_t31);
   let maxBrightness = data.reduce((max, p) => p.bright_t31 > max ? p.bright_t31 : max, data[0].bright_t31);
 
+
   // Normalize brightness
   let brightnessArr = data.map(obj => obj.bright_t31);
   brightnessArr = normalize(brightnessArr);
@@ -509,6 +528,33 @@ function create3DMap(data, currentCenter) {
     const hue = (1 - brightness / max) * 240; // Scale to a hue value
     return `hsl(${hue}, 100%, 50%)`;
   }
+
+
+  function updateColorRangeBar(minValue, maxValue) {
+    const gradientStart = brightnessToColor(minValue * 0.0001);
+    const gradientEnd = brightnessToColor(maxValue);
+    const colorRangeBar = document.getElementById('colorRangeBar');
+    colorRangeBar.style.background = `linear-gradient(to top, ${gradientStart}, ${gradientEnd})`;
+
+    const colorRangeRange = document.getElementById('colorRangeRange');
+    const colorDetails = `
+    <div>
+      ${maxValue}
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
+      ${minValue}
+    </div>
+      `;
+    colorRangeRange.innerHTML = colorDetails;
+  }
+
+  updateColorRangeBar(minBrightness, maxBrightness);
 
   function handlePointClick(pointData) {
     const detailBox = document.getElementById('detailBox');
