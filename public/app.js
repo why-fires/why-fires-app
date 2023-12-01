@@ -365,6 +365,25 @@ document.getElementById('yearSlider').addEventListener('change', () => loadYearD
 
 // });
 
+// Add a button click event listener
+document.getElementById('legendToggle').addEventListener('click', function() {
+  // Toggle the legend visibility for your trace(s)
+  toggleLegendVisibility();
+});
+
+// Function to toggle the legend visibility
+function toggleLegendVisibility() {
+  var plot = document.getElementById('map2D');
+  var traces = plot.data; // Get all the traces in the plot
+
+  // Toggle the showlegend attribute for each trace
+  for (var i = 0; i < traces.length; i++) {
+    traces[i].showlegend = !traces[i].showlegend;
+  }
+
+  // Redraw the plot to reflect the legend changes
+  Plotly.redraw('map2D');
+}
 
 function createGeoGraph(data, currentZoom, currentCenter, style) {
   if (is3D) {
@@ -378,7 +397,7 @@ function createGeoGraph(data, currentZoom, currentCenter, style) {
 
 function create2DMap(data, currentZoom, currentCenter, style) {
   document.getElementById('toggle3D').innerHTML = "<span class=\"material-icons\">public</span> Toggle 3D View";
-
+  document.getElementById('legendToggle').style.display = 'block';
   document.getElementById('map3D').style.display = 'none';
   const container = document.getElementById('map2D');
   container.style.display = 'block';
@@ -586,10 +605,12 @@ function create2DMap(data, currentZoom, currentCenter, style) {
   });
 
   document.getElementById('showNumData').style.display = 'none';
+
 }
 
 function create3DMap(data, currentCenter) {
   document.getElementById('toggle3D').innerHTML = "<span class=\"material-icons\">map</span> Toggle 2D View";
+  document.getElementById('legendToggle').style.display = 'none';
 
   document.getElementById('map2D').style.display = 'none';
   const container = document.getElementById('map3D');

@@ -357,7 +357,6 @@ input[type="date"] {
 }
 
 #toggle3D  {
-
     align-self: end;
     width: 15.5em;
     height: 3em;
@@ -375,6 +374,27 @@ input[type="date"] {
 
 #toggle3D:hover {
     color: var(--toggleColor);
+}
+
+#legendToggle  {
+  margin-top: 20px;
+  align-self: end;
+  width: 15.5em;
+  height: 3em;
+  background-color: var(--primaryColor);
+  border-radius: .25em;
+  border: none;
+  color: #fff;
+  cursor: pointer;
+  font-size: 18px;
+  padding: 9px 20px 8px;
+  text-align: center;
+  transition: .25s all ease;
+  vertical-align: middle;
+}
+
+#legendToggle:hover {
+  color: var(--toggleColor);
 }
 
 #colorRangeBar {
