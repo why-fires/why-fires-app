@@ -1,0 +1,25 @@
+#nav {
+  background-color: #2c3e50;
+  height: 100px;
+}
+
+.Row {
+  display: table;
+  width: 100%; /*Optional*/
+  table-layout: fixed; /*Optional*/
+  border-spacing: 10px; /*Optional*/
+}
+.Column, .Column a {
+  display: table-cell;
+  color: white;
+  font-size: 25px;
+}
+
+#Github {
+  text-align: end;
+}
+
+#AboutUs {
+  text-align: center;
+  font-size: 30px;
+}
