@@ -399,7 +399,7 @@ input[type="date"] {
 
 #colorRangeBar {
     position: fixed;
-    bottom: 0;
+    bottom: 50px;
     right: 0;
     z-index: 100;
     width: 20px;
@@ -466,7 +466,7 @@ input[type="date"] {
 
 #colorRangeRange {
   position: absolute;
-  bottom: 0;
+  bottom: 50px;
   right: 22px;
   margin: 0px;
   padding: 15px;

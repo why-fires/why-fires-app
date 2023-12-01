@@ -508,6 +508,16 @@ function create2DMap(data, currentZoom, currentCenter, style) {
     Plotly.restyle('map2D', update);
   }
 
+  function getRandomColdColor() {
+    // Generate a random hue value within the range of cold colors (blue to purple)
+    const minHue = 180; // Minimum hue for cold colors (blue)
+    const maxHue = 300; // Maximum hue for cold colors (purple)
+    const randomHue = Math.random() * (maxHue - minHue) + minHue;
+
+    // Create an HSL color with the random hue and fixed saturation and lightness
+    return `hsl(${randomHue}, 100%, 50%)`;
+  }
+
   // Function to add a special trace for a clicked data point
   function addSpecialTrace(pointData, traceName) {
     let specialTrace = {
@@ -519,7 +529,7 @@ function create2DMap(data, currentZoom, currentCenter, style) {
       text: pointData.text, // Set the hover text
       hoverinfo: 'text', // Display text on hover
       marker: {
-        color: brightnessToColor(pointData.data.bright_t31),
+        color: getRandomColdColor(),
         size: 15,
         opacity: 1
       }
