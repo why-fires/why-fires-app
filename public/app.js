@@ -412,7 +412,6 @@ function create2DMap(data, currentZoom, currentCenter, style) {
     return `hsl(${hue}, 100%, 50%)`;
   }
 
-
   function updateColorRangeBar(minValue, maxValue) {
     const gradientStart = brightnessToColor(minValue);
     const gradientEnd = brightnessToColor(maxValue);
@@ -438,9 +437,45 @@ function create2DMap(data, currentZoom, currentCenter, style) {
     colorRangeRange.innerHTML = colorDetails;
   }
 
+  function updateColorRangePoint(brightness) {
+    const colorRangePoint = document.getElementById('colorRangePoint');
+    const normalized = (brightness - minBrightness) / (maxBrightness - minBrightness);
+    const value = normalized * 90;
+    colorRangePoint.style.bottom = `${value}%`;
+    colorRangePoint.style.display = 'initial';
+  }
+
+  function getDetail(d) {
+    const typeDescription = typeMapping[d.type] || 'Unknown';
+    const dayNightDescription = dayNightMapping[d.daynight] || 'Unknown';
+    const date = new Date(d.acq_date).toDateString();
+
+    return `
+      <div>
+        <b style="font-size: 24px;">${d.state_name}</b> 
+      </div>
+      <br />
+      <div style="font-size: 18px;">
+        <b>Lat:</b> ${d.latitude}
+        <b>Long:</b> ${d.longitude}
+      </div>
+      <br />
+      <div style="font-size: 18px;">
+        <b>Date:</b> ${date} <br />
+        <b>Time:</b> ${formatTime(d.acq_time)} UTC (${dayNightDescription})
+      </div>
+      <br />
+      <div style="font-size: 18px;">
+        <b>Brightness:</b> ${d.bright_t31} K <br /><br />
+        <b>Type:</b> ${typeDescription}
+      </div>
+      <br />
+      <i style="color: darkgray;">Taken by Satellite ${d.satellite}</i> 
+  `;
+  }
+
 // Call this function with the min and max values of your data
   updateColorRangeBar(minBrightness, maxBrightness);
-
 
   let trace = [
     {
@@ -451,6 +486,7 @@ function create2DMap(data, currentZoom, currentCenter, style) {
       text: data.map(d => `<b>State:</b> ${d.state_name}<br><b>Date:</b> ${d.acq_date}<br><b>Brightness:</b> ${d.bright_t31} Kelvin`),
       hoverinfo: 'text',
       customdata: data.map(d => getDetail(d)),
+      brightness: data.map(d => d.bright_t31),
       marker: {
         color: colors,
         size: 12, 
@@ -586,10 +622,10 @@ function create2DMap(data, currentZoom, currentCenter, style) {
     var detailsBox = document.getElementById('detailBox');
     detailsBox.style.display = 'block';
     detailsBox.innerHTML = infotext;
+    updateColorRangePoint(Number(data.points[0].data.brightness[clickedPointIndex]));
   });
 
   document.getElementById('showNumData').style.display = 'none';
-
 }
 
 function create3DMap(data, currentCenter) {
@@ -643,16 +679,17 @@ function create3DMap(data, currentCenter) {
     type: typeMapping[obj.type] || 'Unknown',
     satellite: obj.satellite
   }));
+
   function brightnessToColor(brightness) {
     const max = maxBrightness * 0.0001; // Assuming max brightness is scaled to 5
     const hue = (1 - brightness / max) * 240; // Scale to a hue value
     return `hsl(${hue}, 100%, 50%)`;
   }
 
-
   function updateColorRangeBar(minValue, maxValue) {
     const gradientStart = brightnessToColor(minValue * 0.0001);
     const gradientEnd = brightnessToColor(maxValue);
+
     const colorRangeBar = document.getElementById('colorRangeBar');
     colorRangeBar.style.background = `linear-gradient(to top, ${gradientStart}, ${gradientEnd})`;
 
@@ -674,11 +711,21 @@ function create3DMap(data, currentCenter) {
     colorRangeRange.innerHTML = colorDetails;
   }
 
+  function updateColorRangePoint(brightness) {
+    const colorRangePoint = document.getElementById('colorRangePoint');
+    const normalized = (brightness - minBrightness) / (maxBrightness - minBrightness);
+    const value = normalized * 90;
+    colorRangePoint.style.bottom = `${value}%`;
+    colorRangePoint.style.display = 'initial';
+  }
+
   updateColorRangeBar(minBrightness, maxBrightness);
 
   function handlePointClick(pointData) {
     const detailBox = document.getElementById('detailBox');
     const date = new Date(pointData.date).toDateString();
+    updateColorRangePoint(pointData.temp);
+
     // Format the data to be displayed, e.g., as a string or HTML
     const dataDetails = `
       <div>
@@ -692,12 +739,11 @@ function create3DMap(data, currentCenter) {
       <br />
       <div style="font-size: 18px;">
         <b>Date:</b> ${date} <br />
-        <b>Time:</b> ${pointData.time} ${pointData.dayNight}
+        <b>Time:</b> ${pointData.time} UTC (${pointData.dayNight})
       </div>
       <br />
       <div style="font-size: 18px;">
-        <b>Brightness:</b> ${pointData.temp} K
-        <div id="colorRangeBarPoint"></div>
+        <b>Brightness:</b> ${pointData.temp} K <br /><br />
         <b>Type:</b> ${pointData.type}
       </div>
       <br />
@@ -792,35 +838,6 @@ function updateDataCount(count) {
   document.getElementById('totalDataPoints').textContent = count;
 }
 
-function getDetail(d) {
-  const typeDescription = typeMapping[d.type] || 'Unknown';
-  const dayNightDescription = dayNightMapping[d.daynight] || 'Unknown';
-  const date = new Date(d.acq_date).toDateString();
-
-  return `
-      <div>
-        <b style="font-size: 24px;">${d.state_name}</b> 
-      </div>
-      <br />
-      <div style="font-size: 18px;">
-        <b>Lat:</b> ${d.latitude}
-        <b>Long:</b> ${d.longitude}
-      </div>
-      <br />
-      <div style="font-size: 18px;">
-        <b>Date:</b> ${date} <br />
-        <b>Time:</b> ${formatTime(d.acq_time)} ${dayNightDescription}
-      </div>
-      <br />
-      <div style="font-size: 18px;">
-        <b>Brightness:</b> ${d.bright_t31} K
-        <div id="colorRangeBarPoint"></div>
-        <b>Type:</b> ${typeDescription}
-      </div>
-      <br />
-      <i style="color: darkgray;">Taken by Satellite ${d.satellite}</i> 
-  `;
-}
 /*
 <div title="Where the fire took place"><b>State:</b> ${d.state_name}</div>
 <div title="When the fire took place"><b>Date:</b> ${d.acq_date}</div>
