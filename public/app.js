@@ -618,10 +618,13 @@ function create2DMap(data, currentZoom, currentCenter, style) {
     }
 
     // Display details of the clicked point
+    openDetailContainer();
+    document.getElementById('closeButton').style.display = "initial";
     var infotext = data.points[0].data.customdata[clickedPointIndex];
     var detailsBox = document.getElementById('detailBox');
     detailsBox.style.display = 'block';
     detailsBox.innerHTML = infotext;
+
     updateColorRangePoint(Number(data.points[0].data.brightness[clickedPointIndex]));
   });
 
@@ -722,6 +725,9 @@ function create3DMap(data, currentCenter) {
   updateColorRangeBar(minBrightness, maxBrightness);
 
   function handlePointClick(pointData) {
+    openDetailContainer();
+    document.getElementById('closeButton').style.display = "initial";
+
     const detailBox = document.getElementById('detailBox');
     const date = new Date(pointData.date).toDateString();
     updateColorRangePoint(pointData.temp);
@@ -833,22 +839,18 @@ function formatTime(timeStr) {
   }
 }
 
-
 function updateDataCount(count) {
   document.getElementById('totalDataPoints').textContent = count;
 }
 
-/*
-<div title="Where the fire took place"><b>State:</b> ${d.state_name}</div>
-<div title="When the fire took place"><b>Date:</b> ${d.acq_date}</div>
-<div title="What time the fire took place"><b>Time:</b> ${formatTime(d.acq_time)}</div>
-<div title="Temperature of the fire measured in Kelvin"><b>Brightness(Temperature):</b> ${d.bright_t31} Kelvin</div>
-<div title="What the cause of the fire was"><b>Type:</b> ${typeDescription}</div>
-<div title="Whether the fire took place during the day or night"><b>Day/Night:</b> ${dayNightDescription}</div>
-<div title="Approximate latitude of the fire"><b>Latitude:</b> ${d.latitude}</div>
-<div title="Approximate longitude of the fire"><b>Longitude:</b> ${d.longitude}</div>
-<div title="Name of the Satellite that measured the data"><b>Satellite:</b> ${d.satellite}</div>
-*/
+function openDetailContainer() {
+  document.getElementById('detailContainer').style.display = "initial";
+}
+
+function closeDetailContainer() {
+  document.getElementById('detailContainer').style.display = "none";
+}
+
 function getPlotlyLayout(divId) {
   let currentLayout = {};
   const gd = document.getElementById(divId);

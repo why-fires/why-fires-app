@@ -36,6 +36,13 @@ body {
   text-align: center;
 }
 
+#closeButton {
+    display: none;
+  position: absolute;
+    right: 4%;
+  cursor: pointer;
+}
+
 .sidebar {
     display: flex;
     justify-content: space-between;
