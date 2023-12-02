@@ -846,10 +846,12 @@ function getPlotlyLayout(divId) {
 
 const toggleBtn = document.querySelector('.sidebar-toggle');
 const sidebar = document.querySelector('.sidebar');
+const sidebarFooter = document.querySelector('.sidebar-footer');
 
 toggleBtn.addEventListener('click', () => {
   toggleBtn.classList.toggle('is-closed');
   sidebar.classList.toggle('is-closed');
+  sidebarFooter.classList.toggle('is-closed');
 })
 
 // Expands and contracts expandContainer within typeContainer in sidebar
