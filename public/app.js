@@ -448,7 +448,7 @@ function create2DMap(data, currentZoom, currentCenter, style) {
       </div>
       <br />
       <div style="font-size: 18px;">
-        <b>Brightness:</b> ${d.bright_t31} K <br /><br />
+        <b>Temperature:</b> ${d.bright_t31} Kelvin <br /><br />
         <b>Type:</b> ${typeDescription}
       </div>
       <br />
@@ -465,7 +465,7 @@ function create2DMap(data, currentZoom, currentCenter, style) {
       mode: 'markers',
       lat: data.map(d => d.latitude),
       lon: data.map(d => d.longitude),
-      text: data.map(d => `<b>State:</b> ${d.state_name}<br><b>Date:</b> ${d.acq_date}<br><b>Brightness:</b> ${d.bright_t31} Kelvin`),
+      text: data.map(d => `<b>State:</b> ${d.state_name}<br><b>Date:</b> ${d.acq_date}<br><b>Temperature:</b> ${d.bright_t31} Kelvin`),
       hoverinfo: 'text',
       customdata: data.map(d => getDetail(d)),
       brightness: data.map(d => d.bright_t31),
@@ -732,7 +732,7 @@ function create3DMap(data, currentCenter) {
       </div>
       <br />
       <div style="font-size: 18px;">
-        <b>Brightness:</b> ${pointData.temp} K <br /><br />
+        <b>Temperature:</b> ${pointData.temp} Kelvin <br /><br />
         <b>Type:</b> ${pointData.type}
       </div>
       <br />
@@ -748,7 +748,7 @@ function create3DMap(data, currentCenter) {
 
     if (point) {
       // Format and display the data in hoverInfo
-      hoverInfo.innerHTML = `State: ${point.state}<br>Date: ${point.date}<br>Brightness: ${point.temp} Kelvin`;
+      hoverInfo.innerHTML = `State: ${point.state}<br>Date: ${point.date}<br>Temperature: ${point.temp} Kelvin`;
       // Use the brightnessToColor function to get the color based on point data
       const pointColor = brightnessToColor(point.brightness);
 
