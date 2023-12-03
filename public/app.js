@@ -602,15 +602,13 @@ function create2DMap(data, currentZoom, currentCenter, style) {
     }
 
     // Display details of the clicked point
-    openDetailContainer();
-    document.getElementById('closeButton').style.display = "initial";
-    var infotext = data.points[0].data.customdata[clickedPointIndex];
-    var detailsBox = document.getElementById('detailBox');
-    detailsBox.style.display = 'block';
-    detailsBox.innerHTML = infotext;
+    openDetailContainer(data.points[0].data.customdata[clickedPointIndex]);
 
     updateColorRangePoint(Number(data.points[0].data.brightness[clickedPointIndex]));
   });
+
+  // Default 2D detail container
+  openDetailContainer("Select a point to learn more about the wildfire.");
 
   document.getElementById('showNumData').style.display = 'none';
 }
@@ -628,6 +626,9 @@ function create3DMap(data, currentCenter) {
   });
 
   let showNumData = 1000;
+
+  // Display instruction for number of data points
+  openDetailContainer("To reduce lag, number of data points is limited to 1000 points. Edit this value in the left sidebar.");
 
   function updateNumDataPoints() {
     const showNumDataInput = document.getElementById('showNumDataInput');
@@ -709,10 +710,6 @@ function create3DMap(data, currentCenter) {
   updateColorRangeBar(minBrightness, maxBrightness);
 
   function handlePointClick(pointData) {
-    openDetailContainer();
-    document.getElementById('closeButton').style.display = "initial";
-
-    const detailBox = document.getElementById('detailBox');
     const date = new Date(pointData.date).toDateString();
     updateColorRangePoint(pointData.temp);
 
@@ -741,7 +738,8 @@ function create3DMap(data, currentCenter) {
     `;
 
     // Display the data in the detailBox
-    detailBox.innerHTML = dataDetails;
+    openDetailContainer(dataDetails);
+    // detailBox.innerHTML = dataDetails;
   }
 
   function handlePointHover(point, prevPoint) {
@@ -827,8 +825,13 @@ function updateDataCount(count) {
   document.getElementById('totalDataPoints').textContent = count;
 }
 
-function openDetailContainer() {
+function openDetailContainer(infotext) {
   document.getElementById('detailContainer').style.display = "initial";
+  document.getElementById('closeButton').style.display = "initial";
+  var detailsBox = document.getElementById('detailBox');
+  detailsBox.style.display = 'block';
+  var detailsBoxText = document.getElementById('detailBoxText');
+  detailsBoxText.innerHTML = infotext;
 }
 
 function closeDetailContainer() {

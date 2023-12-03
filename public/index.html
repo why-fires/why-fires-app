@@ -202,11 +202,10 @@
         <br />
 
         <div id="showNumData">
-          <div class="tooltip">Number of Data:
-            <p style="font-size: 15px; margin: 0">Default:1000</p>
-            <span class="tooltiptext">To reduce lag, please enter number display data from highest temperature to lowest temperature</span>
+          <div class="tooltip">Edit Number of Data Points:
+            <span class="tooltiptext">Enter number of points to display. Data shows from highest to lowest temperature.</span>
           </div>
-          <input type="number" id="showNumDataInput" placeholder="Enter number of data points">
+          <input type="number" id="showNumDataInput" placeholder="1000">
           <button id="showNumDataButton">Apply</button>
         </div>
 
@@ -246,9 +245,7 @@
   <div id="detailContainer">
     <div id="closeButton" class="material-icons" onclick="closeDetailContainer()">close</div>
     <div id="detailBox">
-      <p>
-        Select a point to learn more about the wildfire.
-      </p>
+      <p id="detailBoxText"></p>
     </div>
   </div>
 
