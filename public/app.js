@@ -456,8 +456,8 @@ function create2DMap(data, currentZoom, currentCenter, style) {
       </div>
       <br />
       <div style="font-size: 18px;">
-        <b>Lat:</b> ${d.latitude}
-        <b>Long:</b> ${d.longitude}
+        <b title="Approximate latitude of the fire">Lat:</b> ${d.latitude}
+        <b title="Approximate longitude of the fire">Long:</b> ${d.longitude}
       </div>
       <br />
       <div style="font-size: 18px;">
@@ -466,7 +466,7 @@ function create2DMap(data, currentZoom, currentCenter, style) {
       </div>
       <br />
       <div style="font-size: 18px;">
-        <b>Temperature:</b> ${d.bright_t31} Kelvin <br /><br />
+        <b title="Brightness temperature of the fire measured in Kelvin">Temperature:</b> ${d.bright_t31} Kelvin <br /><br />
         <b>Type:</b> ${typeDescription}
       </div>
       <br />
@@ -708,6 +708,7 @@ function create3DMap(data, currentCenter) {
       <br>
       <br>
       <br>
+      <br>
       ${minValue}
     </div>
       `;
@@ -739,8 +740,8 @@ function create3DMap(data, currentCenter) {
       </div>
       <br />
       <div style="font-size: 18px;">
-        <b>Lat:</b> ${pointData.lat}
-        <b>Long:</b> ${pointData.lng}
+        <b title="Approximate latitude of the fire">Lat:</b> ${pointData.lat}
+        <b title="Approximate longitude of the fire">Long:</b> ${pointData.lng}
       </div>
       <br />
       <div style="font-size: 18px;">
@@ -749,7 +750,7 @@ function create3DMap(data, currentCenter) {
       </div>
       <br />
       <div style="font-size: 18px;">
-        <b>Temperature:</b> ${pointData.temp} Kelvin <br /><br />
+        <b title="Brightness temperature of the fire measured in Kelvin">Temperature:</b> ${pointData.temp} Kelvin <br /><br />
         <b>Type:</b> ${pointData.type}
       </div>
       <br />
