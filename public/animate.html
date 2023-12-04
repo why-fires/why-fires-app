@@ -26,7 +26,7 @@
   </style>
 
   <div id="content">
-    <canvas width="800" height="800"></canvas>
+    <canvas width="1000" height="1000"></canvas>
   </div>
 
 
@@ -36,8 +36,8 @@
 <script>
   // Create a projection for the globe
   let projection = d3.geoOrthographic()
-      .scale(400)
-      .translate([400, 400]);
+      .scale(500)
+      .translate([500, 500]);
 
   // Set up the canvas context
   let context = d3.select('#content canvas')
@@ -71,7 +71,7 @@
   // Update function for the globe
   function update() {
     projection.rotate([yaw, -35]);
-    context.clearRect(0, 0, 800, 800);
+    context.clearRect(0, 0, 1000, 1000);
 
     // Draw the globe
     context.lineWidth = 0.5;

@@ -35,7 +35,7 @@ html, body {
 }
 
 h1 {
-  font-size: 100px;
+  font-size: 80px;
 }
 
 #title {
@@ -71,7 +71,6 @@ h1 {
 }
 
 #aboutProject {
-  background-image: url("images/visualization.png");
   margin-bottom: 50px;
 }
 
@@ -188,4 +187,22 @@ h2 a{
 /* Styling the scrollbar width */
 ::-webkit-scrollbar {
   width: 10px;
+}
+
+.div-with-background {
+  position: relative;
+  z-index: 1;
+}
+
+.div-with-background::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: url('images/visualization.png') no-repeat center center;
+  background-size: auto;
+  opacity: 0.7; /* Adjust the opacity as needed */
+  z-index: -1;
 }
